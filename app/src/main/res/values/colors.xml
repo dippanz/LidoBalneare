@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blu">#CC0000FF</color>
+    <color name="blu100">#0000E6</color>
+    <color name="semi_white">#E6EFEFEF</color>
+    <color name="day_selected">#BF0000FF</color>
+
+    <color name="celeste">#CC2182FF</color>
+    <color name="grigio_chiaro">#80808080</color>
+    <color name="grigio">#676767</color>
+    <color name="red">#FF0000</color>
+
+
+
+</resources>

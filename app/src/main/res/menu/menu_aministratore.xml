@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:title="Home" />
+    <item
+        android:id="@+id/servizi"
+        android:title="Servizi"/>
+
+    <item
+        android:id="@+id/ospiti"
+        android:title="Ospiti"/>
+    <item
+        android:id="@+id/prenotazioni"
+        android:title="Prenotazioni"/>
+    <item
+        android:id="@+id/clientiPassati"
+        android:title="Clienti Passati"/>
+</menu>
