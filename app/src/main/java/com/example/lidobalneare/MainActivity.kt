@@ -4,8 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lidobalneare.databinding.ActivityMainBinding
+import java.io.Serializable
 
 
 class MainActivity : AppCompatActivity() {
@@ -17,33 +19,63 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        /*//setto parte centrale home
-        DBMSboundary().getDataHomePage(applicationContext, object : QueryReturnCallback<List<ViewModelHomePage>> {
-            override fun onReturnValue(response: List<ViewModelHomePage>, message: String) {
-                binding.recyclerview.adapter = MyAdapterHomePage(response)
-            }
+        //setto parte centrale home
+        val adapter = MyAdapterHomePage(arrayListOf(
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.barca), applicationContext.getString(R.string.title_barca), applicationContext.getString(R.string.desc_barca)),
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.barcagiro), applicationContext.getString(R.string.title_giro_barca), applicationContext.getString(R.string.desc_giro_barca)),
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.lettini_ombrelloni), applicationContext.getString(R.string.title_lettini), applicationContext.getString(R.string.desc_lettini)),
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.divani_prive), applicationContext.getString(R.string.title_divanetti), applicationContext.getString(R.string.desc_divanetti)),
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.motodacqua), applicationContext.getString(R.string.title_moto_acqua), applicationContext.getString(R.string.desc_moto_acqua)),
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.pedalo), applicationContext.getString(R.string.title_pedalo), applicationContext.getString(R.string.desc_pedalo)),
+            ViewModelHomePage(AppCompatResources.getDrawable(this, R.drawable.pingpong), applicationContext.getString(R.string.title_pingpong), applicationContext.getString(R.string.desc_pingpong)),
+        )
+        )
 
-            override fun onQueryFailed(fail: String) {
-                // Gestisci il caso in cui la query non abbia avuto successo
-                Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
-            }
+        adapter.setOnClickListener(object : MyAdapterHomePage.OnClickListener {
+            override fun onClick(position: Int, model: ViewModelHomePage) {
+                val intent = Intent(applicationContext, MainPrenotazione::class.java)
 
-            override fun onQueryError(error: String) {
-                // Gestisci l'errore nella query
-                Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
-            }
-        })*/
+                //l'ordine è fissato
+                when(position){
+                    0 -> {
+                        intent.putExtra("nome", "barca")
+                        intent.putExtra("spunte", true)
+                    }
+                    1 ->{
+                        intent.putExtra("nome", "barcagiro")
+                        intent.putExtra("spunte", true)
+                    }
+                    2 ->{
+                        intent.putExtra("nome", "lettini")
+                    }
+                    3 ->{
+                        intent.putExtra("nome", "motoacqua")
+                        intent.putExtra("spunte", true)
+                    }
+                    4 ->{
+                        intent.putExtra("nome", "pedalo")
+                        intent.putExtra("spunte", true)
+                    }
+                    5 ->{
+                        intent.putExtra("nome", "pingpong")
+                        intent.putExtra("spunte", true)
+                    }
+                    6 ->{
+                        intent.putExtra("nome", "prive")
+                }
+                    else -> return
+                }
 
+                intent.putExtra("cardview", model as Serializable)
+                // Avvia l'activity desiderata
+                startActivity(intent)
+            }
+        })
+
+        binding.recyclerview.adapter = adapter
 
         binding.recyclerview.layoutManager = LinearLayoutManager(this)
-        /*binding.recyclerview.adapter = MyAdapterHomePage(
-            listOf(
-                ViewModelHomePage(listOf(), "ciao", "prova1"),
-                ViewModelHomePage(listOf(), "ciao2", "prova1"),
-                ViewModelHomePage(listOf(), "ciao3", "prova1"),
-                ViewModelHomePage(listOf(), "ciao4", "prova1")
-            )
-        )*/
+
 
         //setto parte superiore home
         binding.viewPager.adapter =
@@ -64,6 +96,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         }
+
+
     }
+
 
 }

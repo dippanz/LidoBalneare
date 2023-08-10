@@ -45,7 +45,7 @@ class MyMoney(m: Money) {
         }
 
 
-
+    constructor(m: BigDecimal): this(Money.newBuilder().setNanos(m.remainder(BigDecimal.ONE).multiply(BigDecimal(1000)).toInt()).setUnits(m.toBigInteger().toLong()).setCurrencyCode("EUR").build())
 
     constructor(): this(Money.newBuilder().setNanos(0).setUnits(0).setCurrencyCode("EUR").build())
 
@@ -103,6 +103,11 @@ class MyMoney(m: Money) {
     override fun toString(): String{
        return money.toString()
     }
+
+    fun toMoney(): Money{
+        return money
+    }
+
 
 
 

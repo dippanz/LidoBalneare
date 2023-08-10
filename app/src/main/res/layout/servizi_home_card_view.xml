@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:elevation="5dp"
+        android:elevation="8dp"
         android:layout_margin="4dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,27 +29,27 @@
 
             <TextView
                 android:id="@+id/descCardView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="2dp"
                 android:text="TextView"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.095"
+                app:layout_constraintHorizontal_bias="0.32"
                 app:layout_constraintStart_toEndOf="@+id/imageCardView"
                 app:layout_constraintTop_toBottomOf="@+id/titleCardView"
                 app:layout_constraintVertical_bias="0.066" />
 
             <TextView
                 android:id="@+id/titleCardView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="200dp"
+                android:layout_height="26dp"
                 android:layout_marginTop="4dp"
                 android:text="TextView"
-                android:textStyle="bold"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
+                app:layout_constraintHorizontal_bias="0.32"
                 app:layout_constraintStart_toEndOf="@+id/imageCardView"
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>

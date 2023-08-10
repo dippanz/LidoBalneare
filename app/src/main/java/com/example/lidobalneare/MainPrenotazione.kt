@@ -3,6 +3,7 @@ package com.example.lidobalneare
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lidobalneare.databinding.ActivityMainPrenotazioneBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -76,8 +77,33 @@ class MainPrenotazione : AppCompatActivity() {
             }
         })
 
-        //inserisco resoconto  todo inserire dati da intent che apre activity dovrebbe essere dalle immagini della prima recycler view
-        //val t = manager.beginTransaction()
+
+
+        //prelevo dati per caricare resoconto
+        DBMSboundary().getPrezzoServizio(applicationContext, object : QueryReturnCallback<MyMoney>{
+            override fun onReturnValue(response: MyMoney, message: String) {
+
+                //inserisco resoconto  todo inserire dati da intent che apre activity dovrebbe essere dalle immagini della prima recycler view
+                val t = manager.beginTransaction()
+                if(intent.getBooleanExtra("spunte", false)){
+                    t.replace(R.id.fragment_container_spunte, FragSpunte())
+                }
+                t.replace(R.id.fragment_container_resoconto, FragResoconto( intent.getSerializableExtra("cardview") as ViewModelHomePage, response.toMoney(), 0.1))
+                t.commit()
+            }
+
+            override fun onQueryFailed(fail: String) {
+                // Gestisci il caso in cui la query non abbia avuto successo
+                Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onQueryError(error: String) {
+                // Gestisci l'errore nella query
+                Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+            }
+
+        }, intent.getStringExtra("nome").toString())
+
 
 
 

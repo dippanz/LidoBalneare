@@ -70,10 +70,12 @@
     <string name="Inserisci_data_valida">Inserisci data valida</string>
     <string name="desc_password_field">Campo di input per la password</string>
     <string name="query_failed">Query failed</string>
-    <string name="query_format_error">Query error</string>
+    <string name="query_format_error">Query format error</string>
+    <string name="query_format_error_image">Query format error image</string>
     <string name="query_format_errorDatiMancanti">Query error, alcuni dati non sono stati caricati correttamente</string>
     <string name="query_successful">Query succes</string>
     <string name="query_error">Query error</string>
+    <string name="query_error_image">Query error image</string>
     <string name="title_activity_amministratore">ActivityAmministratore</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
@@ -97,4 +99,33 @@
     <string name="le_tue_recensioni">📑 Le tue recensioni</string>
     <string name="strumenti">STRUMENTI</string>
     <string name="impostazioni">⚙️ Impostazioni</string>
+    <string name="listacentrale">listaCentrale</string>
+    <string name="modifica_profilo">Modifica profilo</string>
+    <string name="metodi_di_pagamento">Metodi di pagamento</string>
+    <string name="_1_0_0">1.0.0</string>
+    <string name="versione_app">Versione app</string>
+
+
+    <string name="title_barca">Barca</string>
+    <string name="title_giro_barca">Giro in barca</string>
+    <string name="title_divanetti">Divanetti e Privé</string>
+    <string name="title_lettini">Lettini e ombrelloni</string>
+    <string name="title_moto_acqua">Moto d\'acqua</string>
+    <string name="title_pedalo">Pedalò</string>
+    <string name="title_pingpong">Ping Pong</string>
+
+    <string name="desc_barca">Premi per prenotare una piccola imbarcazione con la quale fare un giro in mare con i tuoi amici!</string>
+    <string name="desc_giro_barca">Premi per prenotare un giro in barca nelle isole vicine!</string>
+    <string name="desc_divanetti">Premi per prenotare una zona privata con divanetti e un gazebo dove stare con i tuoi amici!</string>
+    <string name="desc_lettini">Premi per prenotare il tuo posto nel lido!</string>
+    <string name="desc_moto_acqua">Premi per prenotare una moto d\'acqua con la quale fare un giro mozzafiato!</string>
+    <string name="desc_pedalo">Premi per prenotare un pedalò</string>
+    <string name="desc_pingpong">Premi per prenotare il tuo tavolo da Ping Pong!</string>
+
+
+    <string name="register">REGISTER</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="signup_login_hint">Already have an account? Sign In</string>
+    <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
 </resources>

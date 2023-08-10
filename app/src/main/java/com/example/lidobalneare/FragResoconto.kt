@@ -16,7 +16,7 @@ import java.math.RoundingMode
  *
  * strEuro contiene i
  */
-class FragResoconto(private val viewModelHomePage: ViewModelHomePage,private val str: List<String>,private val prezzo: Money, private val sconto: Double): Fragment(R.layout.fragment_resoconto) {
+class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private val prezzo: Money, private val sconto: Double): Fragment(R.layout.fragment_resoconto) {
 
     //percentuale di sconto del 5% fissa
     private val SCONTO_PAGA_IN_ANTICIPO = 0.05
@@ -43,12 +43,6 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage,private val
             view.findViewById<ImageView>(R.id.imageResoconto).setImageDrawable(viewModelHomePage.image)
             view.findViewById<TextView>(R.id.titleCamera).text = viewModelHomePage.title
             view.findViewById<TextView>(R.id.descLocazione).text = viewModelHomePage.desc
-        }
-
-        if(str.size >= 3){
-            view.findViewById<TextView>(R.id.textView8).text = getString(R.string.text_arrivo, str[0])
-            view.findViewById<TextView>(R.id.textView9).text = getString(R.string.text_partenza, str[1])
-            view.findViewById<TextView>(R.id.textView10).text = getString(R.string.text_notti, str[2])
         }
 
         //calcolo vari costi

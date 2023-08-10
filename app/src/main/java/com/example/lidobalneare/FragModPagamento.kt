@@ -23,7 +23,6 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
             R.id.frag_resoconto,
             FragResoconto(
                 arguments?.getSerializable("viewModel") as ViewModelHomePage,
-                listOf("1", "2", "3"),
                 Money.newBuilder().setCurrencyCode("EUR").setUnits(10).setNanos(50).build(),
                 0.05
             )
