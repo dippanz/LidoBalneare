@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/parentPrenotazione"
     tools:context=".MainPrenotazione"
     android:orientation="vertical">
 
@@ -15,6 +16,8 @@
         android:padding="10dp"
         android:background="@drawable/rectangle_shape_bold"
         android:elevation="16dp">
+
+
 
 
         <TextView
@@ -35,7 +38,7 @@
             android:layout_marginTop="8dp"
 
             android:gravity="center_vertical"
-            android:text="TextView"
+            android:text="@string/persone_1s"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.62"
             app:layout_constraintStart_toStartOf="parent"
@@ -48,7 +51,7 @@
             android:layout_marginTop="8dp"
 
             android:gravity="center_vertical"
-            android:text="TextView"
+            android:text="@string/lettini_1_s"
 
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.596"
@@ -81,7 +84,7 @@
             app:srcCompat="@drawable/ic_person" />
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/imageButtonLettino"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
@@ -106,17 +109,12 @@
         <ScrollView
             android:contentDescription="@string/listacentrale"
             android:layout_width="match_parent"
-            android:layout_height="450dp">
+            android:layout_height="430dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/fragment_container_spunte"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
                 <androidx.fragment.app.FragmentContainerView
                     android:id="@+id/fragment_container_resoconto"
@@ -130,7 +128,7 @@
             android:id="@+id/bottomSheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/semi_white"
+            android:background="@color/white"
             app:behavior_hideable="true"
             app:behavior_peekHeight="0dp"
             app:layout_behavior="@string/bottom_sheet_behavior">
@@ -147,7 +145,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="4dp"
             android:text="@string/prenota" />
 
 

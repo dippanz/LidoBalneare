@@ -28,7 +28,7 @@ class MyAdapterViewPrenotazione(private val serviceList: List<ViewModelHomePage>
         val item = serviceList[position]
 
         //setto ogni cardview
-        holder.image.setImageDrawable(item.image)
+        holder.image.setImageResource(item.image)
         holder.title.text = item.title
         holder.desc.text = item.desc
 

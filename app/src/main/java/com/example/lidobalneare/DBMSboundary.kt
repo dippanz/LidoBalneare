@@ -56,7 +56,7 @@ class DBMSboundary {
 
                                         val imageByteArray = response.body()?.bytes()
                                         val imageDrawable = BitmapDrawable.createFromStream(imageByteArray?.inputStream(), null)
-                                        list.add(ViewModelHomePage(imageDrawable, title, desc))
+                                        //list.add(ViewModelHomePage(imageDrawable, title, desc))
 
                                     }else{
                                         Log.i("msg", response.toString())
@@ -118,15 +118,20 @@ class DBMSboundary {
  * */
     fun getPrezzoServizio(context: Context, callback: QueryReturnCallback<MyMoney>,nome: String){
         //query
-        val query = "SELECT prezzo FROM webmobile.prezzoServizi where nome = $nome"
+        val query = "SELECT prezzo FROM webmobile.prezzoServizi where nome = \"$nome\""
+
+    Log.i("msg", nome)
 
         ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if(response.isSuccessful){
+
                     //deve restituire solo un oggetto o nessuno
-                    val result = response.body()!!.getAsJsonObject("queryset")
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
                     Log.i("msg", result.toString())
-                    val money = MyMoney(result.get("prezzo").asBigDecimal)
+
+                    val money = MyMoney(result.get(0).asJsonObject.get("prezzo").asBigDecimal)
                     callback.onReturnValue(money, context.getString(R.string.query_successful))
                 }else{
                     callback.onQueryError(context.getString(R.string.query_error))

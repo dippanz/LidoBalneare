@@ -28,7 +28,7 @@ class MyAdapterHomePage(private val serviceList: List<ViewModelHomePage>): Recyc
         val item = serviceList[position]
 
         //setto vari dati
-        holder.image.setImageDrawable(item.image)
+        holder.image.setImageResource(item.image)
         holder.title.text = item.title
         holder.desc.text = item.desc
 

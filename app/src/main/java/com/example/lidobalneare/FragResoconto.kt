@@ -5,6 +5,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import com.google.type.Money
 import java.math.BigDecimal
@@ -40,7 +41,7 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
         //gestire la view
 
         if(viewModelHomePage.hasData()){
-            view.findViewById<ImageView>(R.id.imageResoconto).setImageDrawable(viewModelHomePage.image)
+            view.findViewById<ImageView>(R.id.imageResoconto).setImageDrawable(AppCompatResources.getDrawable(requireContext(), viewModelHomePage.image) )
             view.findViewById<TextView>(R.id.titleCamera).text = viewModelHomePage.title
             view.findViewById<TextView>(R.id.descLocazione).text = viewModelHomePage.desc
         }

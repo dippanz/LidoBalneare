@@ -10,10 +10,11 @@
     <string name="button_persone">bottone per inserire numero persone</string>
     <string name="button_cerca">bottone per cercare le stanze secondo certi criteri</string>
     <string name="formato_date">%1$s %2$s %3$s - %4$s %5$s %6$s</string>
-    <string name="titolo_view_num_persone">Indica quanti alloggi e ospiti</string>
-    <string name="text1_view_num_persone">Camere</string>
-    <string name="text2_view_num_persone">Adulti</string>
-    <string name="text3_view_num_persone">Bambini</string>
+    <string name="formato_date_singologiorno">%1$s %2$s %3$s</string>
+    <string name="titolo_view_num_persone">Indica quante persone e lettini prenotare</string>
+    <string name="text1_view_num_persone">Persone</string>
+    <string name="text2_view_num_persone">Lettini/Divanetti</string>
+
     <string name="bottone_meno">bottone meno</string>
     <string name="bottone_piu">bottone piu</string>
     <string name="info">Info</string>
@@ -128,4 +129,7 @@
     <string name="login_password_hint">Password</string>
     <string name="signup_login_hint">Already have an account? Sign In</string>
     <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
+    <string name="_1">1</string>
+    <string name="persone_1s">%1$s Persone</string>
+    <string name="lettini_1_s">%1$s Lettini</string>
 </resources>

@@ -7,12 +7,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lidobalneare.databinding.ActivityMainPrenotazioneBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 
 
 class MainPrenotazione : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainPrenotazioneBinding
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<*>
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +58,32 @@ class MainPrenotazione : AppCompatActivity() {
             }
         }
 
+        binding.imageButtonLettino.setOnClickListener {
+            if(manager.backStackEntryCount == 0) {
+                //carico il fragment
+                val transaction = manager.beginTransaction()
+                transaction.replace(R.id.fragmentView, NumPersonFragment())
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+                //Eseguo il commit in modo sincrono
+                manager.executePendingTransactions()
+
+                //espando il bottom sheet
+                mBottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        }
+
         mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.buttonPrenota2.visibility = View.VISIBLE
+                        binding.parentPrenotazione.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.white))
+
                         if(manager.backStackEntryCount != 0){
                             manager.popBackStack()
                         }
@@ -66,6 +91,13 @@ class MainPrenotazione : AppCompatActivity() {
                     BottomSheetBehavior.STATE_SETTLING -> {
                         //disabilito visibilita e funzionamento del tasto
                         binding.buttonPrenota2.visibility = View.GONE
+
+                        //rendo il dietro scuro e non utilizzaile
+                        binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.trasparente))
+                        binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.trasparente))
+                        binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.trasparente))
+                        binding.parentPrenotazione.setBackgroundColor(resources.getColor(R.color.grigio_chiaro))
+
                     }
                     else -> Log.i("msg", "stato: $newState")
 
@@ -77,32 +109,45 @@ class MainPrenotazione : AppCompatActivity() {
             }
         })
 
+        //setto parte superiore
+        // Formatta la data in "EEE dd MMM" (sab 12 ago)
+        val dateFormat = SimpleDateFormat("EEE dd MMM", Locale.ITALIAN)
+        val formattedDate: String = dateFormat.format(Calendar.getInstance().time)
+        binding.textDate.text = formattedDate
+        binding.textNumPersone.text = resources.getString(R.string.persone_1s, "1")
+        binding.textNumLettini.text = resources.getString(R.string.lettini_1_s, "1")
+
+        if(!intent.getBooleanExtra("buttonLettino", false)){
+            //se non serve nascondo il bottone lettino
+            binding.imageButtonLettino.visibility = View.GONE
+            binding.textNumLettini.visibility = View.GONE
+        }
+
 
 
         //prelevo dati per caricare resoconto
-        DBMSboundary().getPrezzoServizio(applicationContext, object : QueryReturnCallback<MyMoney>{
-            override fun onReturnValue(response: MyMoney, message: String) {
+        intent.getStringExtra("nome")?.let {
+            DBMSboundary().getPrezzoServizio(applicationContext, object : QueryReturnCallback<MyMoney>{
+                override fun onReturnValue(response: MyMoney, message: String) {
 
-                //inserisco resoconto  todo inserire dati da intent che apre activity dovrebbe essere dalle immagini della prima recycler view
-                val t = manager.beginTransaction()
-                if(intent.getBooleanExtra("spunte", false)){
-                    t.replace(R.id.fragment_container_spunte, FragSpunte())
+                    //inserisco resoconto
+                    val t = manager.beginTransaction()
+                    t.replace(R.id.fragment_container_resoconto, FragResoconto(intent.getSerializableExtra("cardview") as ViewModelHomePage, response.toMoney(), 0.1))
+                    t.commit()
                 }
-                t.replace(R.id.fragment_container_resoconto, FragResoconto( intent.getSerializableExtra("cardview") as ViewModelHomePage, response.toMoney(), 0.1))
-                t.commit()
-            }
 
-            override fun onQueryFailed(fail: String) {
-                // Gestisci il caso in cui la query non abbia avuto successo
-                Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
-            }
+                override fun onQueryFailed(fail: String) {
+                    // Gestisci il caso in cui la query non abbia avuto successo
+                    Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
+                }
 
-            override fun onQueryError(error: String) {
-                // Gestisci l'errore nella query
-                Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
-            }
+                override fun onQueryError(error: String) {
+                    // Gestisci l'errore nella query
+                    Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                }
 
-        }, intent.getStringExtra("nome").toString())
+            }, it)
+        }
 
 
 
@@ -119,6 +164,10 @@ class MainPrenotazione : AppCompatActivity() {
 
 
 
+    }
+
+    fun getBottomSheet(): BottomSheetBehavior<*> {
+        return mBottomSheetBehavior
     }
 
 

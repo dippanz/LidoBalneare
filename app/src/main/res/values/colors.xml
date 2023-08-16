@@ -24,4 +24,7 @@
     <!--colros for card-->
     <color name="whiteCardColor">#fff</color>
 
+    <color name="trasparente">#00000000</color>
+
+
 </resources>

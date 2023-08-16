@@ -2,9 +2,11 @@ package com.example.lidobalneare
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.util.Calendar
@@ -27,6 +29,7 @@ class CalendarFragment: Fragment(R.layout.calendar_nested) {
 
         var firstDate: CalendarDay? = null
         var endDate: CalendarDay? = null
+        var lastFirstDate: CalendarDay? = null
 
 
         //setta graficamente le date selezionate
@@ -38,22 +41,37 @@ class CalendarFragment: Fragment(R.layout.calendar_nested) {
                     firstDate = date
                     endDate = null
                     setDecoration(firstDate, null, R.drawable.background_day_selected)
+
+
                 }else if(endDate == null && firstDate!!.isBefore(date)){
                     endDate = date
                     setDecoration(firstDate, null, R.drawable.background_day_selected_left)
                     setDecoration(null, endDate, R.drawable.background_day_selected_right)
                     //qui i valori non sono nulli
                     setDecoration(nextDay(firstDate!!), beferoDay(endDate!!), R.drawable.background_day_selected_center)
-                    //imposta il range nel text view usando una stringa come formato predefinito -> lun 11 giu - mar 12 giu
-                    activity?.findViewById<TextView>(R.id.textDate)?.text =
-                        getString(R.string.formato_date, getDayOfWeek(firstDate!!),
-                            firstDate!!.day.toString(), getMonth(firstDate!!), getDayOfWeek(endDate!!), endDate!!.day.toString(), getMonth(endDate!!) )
+                    lastFirstDate = firstDate
                     firstDate = null
                 }
             }
         }
-    }
 
+        view.findViewById<Button>(R.id.selezionaDateButton).setOnClickListener {
+            if(firstDate != null && endDate == null){
+                activity?.findViewById<TextView>(R.id.textDate)?.text =
+                    getString(R.string.formato_date_singologiorno, getDayOfWeek(firstDate!!),
+                        firstDate!!.day.toString(), getMonth(firstDate!!))
+            }else if(lastFirstDate != null){
+                //imposta il range nel text view usando una stringa come formato predefinito -> lun 11 giu - mar 12 giu
+                activity?.findViewById<TextView>(R.id.textDate)?.text =
+                    getString(R.string.formato_date, getDayOfWeek(lastFirstDate!!),
+                        lastFirstDate!!.day.toString(), getMonth(lastFirstDate!!), getDayOfWeek(endDate!!), endDate!!.day.toString(), getMonth(endDate!!) )
+
+            }
+
+            ( activity as? MainPrenotazione)?.getBottomSheet()?.state = BottomSheetBehavior.STATE_COLLAPSED
+
+        }
+    }
     private fun getMonth(calendarDay: CalendarDay): String {
         val calendar = Calendar.getInstance()
         calendar.set(calendarDay.year, calendarDay.month, calendarDay.day)
