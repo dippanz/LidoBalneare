@@ -317,7 +317,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/notifications/baseline_notifications_24.xml" />
+                                      <entry key="url" value="file:/$USER_HOME$/AppData/Local/Android/Sdk/icons/material/materialicons/person/baseline_person_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -327,7 +327,7 @@
                         </option>
                         <option name="values">
                           <map>
-                            <entry key="outputName" value="ic_notifications" />
+                            <entry key="outputName" value="baseline_person_120" />
                             <entry key="sourceFile" value="C:\Users\Emanuele\Desktop\uni\pmw\LidoBalneare" />
                           </map>
                         </option>

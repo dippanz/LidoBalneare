@@ -128,8 +128,16 @@
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>
     <string name="signup_login_hint">Already have an account? Sign In</string>
-    <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
+    <string name="login_signup_hint">Non hai un account? Registrati</string>
     <string name="_1">1</string>
     <string name="persone_1s">%1$s Persone</string>
     <string name="lettini_1_s">%1$s Lettini</string>
+    <string name="lido_bagbeach">Lido BagBeach</string>
+    <string name="hai_dimenticato_la_password">Hai dimenticato la password?</string>
+    <string name="login">Login</string>
+    <string name="prenotazioni_effettuate">Prenotazioni effettuate</string>
+    <string name="cambia_password">Cambia password</string>
+    <string name="vecchia_password">Vecchia password</string>
+    <string name="nuova_password">Nuova password</string>
+    <string name="applica_modifiche">Applica modifiche</string>
 </resources>

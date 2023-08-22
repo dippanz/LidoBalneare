@@ -3,13 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".MainProfilo">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/containerProfilo"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="650dp"/>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigationBarProfilo"
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:menu="@menu/bottom_menu"/>
 
 
 </LinearLayout>

@@ -1,19 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainProfilo">
-
-
-
-
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,16 +25,17 @@
                 />
 
             <ImageView
+                android:background="@drawable/cerchio_profilo"
+                android:foreground="@drawable/baseline_person_120"
                 android:id="@+id/imageView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:srcCompat="@tools:sample/avatars"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_marginTop="10dp"
                 android:layout_gravity="center"
                 />
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/textViewNome"
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
@@ -99,7 +92,7 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
 
-                android:text="Prenotazioni effettuate"
+                android:text="@string/prenotazioni_effettuate"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -113,8 +106,7 @@
                 android:layout_marginEnd="100dp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-
-                android:text="01"
+                android:text="0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -157,25 +149,27 @@
                     android:text="@string/il_tuo_profilo"/>
 
                 <TextView
+                    android:id="@+id/textNomeCognome"
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:background="@drawable/linee_profilo"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:textColor="@color/black"
                     android:text="@string/nome_e_cognome"
                     />
 
                 <TextView
+                    android:id="@+id/textMail"
                     android:layout_marginTop="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:background="@drawable/linee_profilo"
-                    android:textSize="16sp"
+                    android:textSize="17sp"
                     android:textColor="@color/black"
                     android:text="@string/email"
                     />
@@ -197,7 +191,7 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:background="@drawable/linee_profilo"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textColor="@color/black"
                     android:text="@string/le_tue_recensioni"
                     />
@@ -218,7 +212,7 @@
                     android:paddingTop="5dp"
                     android:paddingBottom="5dp"
                     android:background="@drawable/linee_profilo"
-                    android:textSize="15sp"
+                    android:textSize="17sp"
                     android:textColor="@color/black"
                     android:text="@string/impostazioni"
                     />
@@ -232,9 +226,5 @@
 
         </ScrollView>
 
-    </FrameLayout>
 
-
-
-
-</LinearLayout>
+</FrameLayout>

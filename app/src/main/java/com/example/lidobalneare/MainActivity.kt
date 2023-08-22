@@ -31,40 +31,60 @@ class MainActivity : AppCompatActivity() {
 
         adapter.setOnClickListener(object : MyAdapterHomePage.OnClickListener {
             override fun onClick(position: Int, model: ViewModelHomePage) {
-                val intent = Intent(applicationContext, MainPrenotazione::class.java)
+                if(Utente.getInstance().isLoggedIn()) {
+                    val intent = Intent(applicationContext, MainPrenotazione::class.java)
 
-                //l'ordine è fissato
-                when(position){
-                    0 -> {
-                        intent.putExtra("nome", "barca")
+                    //l'ordine è fissato
+                    when (position) {
+                        0 -> {
+                            intent.putExtra("nome", "barca")
+                            //serve per capire se serve il moltiplicatore per il prezzo
+                            intent.putExtra("aTesta", true)
+                        }
+
+                        1 -> {
+                            intent.putExtra("nome", "barcagiro")
+                            intent.putExtra("aTesta", true)
+                        }
+
+                        2 -> {
+                            intent.putExtra("nome", "lettini")
+                            //questo extra serve a capire se mostrare o meno bottone del lettino
+                            intent.putExtra("buttonLettino", true)
+                        }
+
+                        3 -> {
+                            intent.putExtra("nome", "motoacqua")
+                            intent.putExtra("aTesta", true)
+
+                        }
+
+                        4 -> {
+                            intent.putExtra("nome", "pedalo")
+                        }
+
+                        5 -> {
+                            intent.putExtra("nome", "pingpong")
+                            intent.putExtra("aTesta", true)
+                        }
+
+                        6 -> {
+                            intent.putExtra("nome", "prive")
+                            intent.putExtra("buttonLettino", true)
+                        }
+
+                        else -> return
                     }
-                    1 ->{
-                        intent.putExtra("nome", "barcagiro")
-                    }
-                    2 ->{
-                        intent.putExtra("nome", "lettini")
-                        //questo extra serve a capire se mostrare o meno bottone del lettino
-                        intent.putExtra("buttonLettino", true)
-                    }
-                    3 ->{
-                        intent.putExtra("nome", "motoacqua")
-                    }
-                    4 ->{
-                        intent.putExtra("nome", "pedalo")
-                    }
-                    5 ->{
-                        intent.putExtra("nome", "pingpong")
-                    }
-                    6 ->{
-                        intent.putExtra("nome", "prive")
-                        intent.putExtra("buttonLettino", true)
-                    }
-                    else -> return
+
+                    intent.putExtra("cardview", model as Serializable)
+                    // Avvia l'activity desiderata
+                    startActivity(intent)
+                }else{
+                    //se l'utente non logga non permetto di prenotare
+                    val i = Intent(applicationContext, MainActivitySchermateVuote::class.java)
+                    i.putExtra("layout", R.layout.frag_loggin)
+                    startActivity(i)
                 }
-
-                intent.putExtra("cardview", model as Serializable)
-                // Avvia l'activity desiderata
-                startActivity(intent)
             }
         })
 
@@ -81,6 +101,11 @@ class MainActivity : AppCompatActivity() {
         //setto parte inferiore home
         binding.navigationBar.setOnItemSelectedListener {
             when (it.itemId) {
+                R.id.profilo -> {
+                    val i = Intent(this, MainProfilo::class.java)
+                    startActivity(i)
+                    true
+                }
                 else -> false
             }
 

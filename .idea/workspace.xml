@@ -2,7 +2,9 @@
 <project version="4">
   <component name="AndroidLayouts">
     <shared>
-      <config />
+      <config>
+        <device id="pixel_4" />
+      </config>
     </shared>
   </component>
   <component name="AutoImportSettings">
@@ -10,23 +12,32 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e65106b8-4843-490c-bc41-31ac6e761667" name="Changes" comment="add function">
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragModProfilo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainActivitySchermateVuote.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/baseline_person_120.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/drawable/cerchio_profilo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_schermate_vuote.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/frag_modifica_profilo.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/assetWizardSettings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/CalendarFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/CalendarFragment.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/DBMSboundary.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/DBMSboundary.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragImpostazioni.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragImpostazioni.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragLoggin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragLoggin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragProfilo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragProfilo.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragResoconto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragResoconto.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragSpunte.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainActivity.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainPrenotazione.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainPrenotazione.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MyAdapterHomePage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MyAdapterHomePage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MyAdapterViewPrenotazione.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MyAdapterViewPrenotazione.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/NumPersonFragment.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/NumPersonFragment.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/ViewModelHomePage.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/ViewModelHomePage.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_prenotazione.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_prenotazione.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/calendar_nested.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/calendar_nested.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/frag_spunte.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_resoconto.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_resoconto.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/view_num_person_nested.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/view_num_person_nested.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/colors.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainProfilo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainProfilo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/Utente.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/Utente.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_profilo.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_profilo.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/frag_impostazioni.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/frag_impostazioni.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/frag_loggin.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/frag_loggin.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/frag_profilo.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/frag_profilo.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/layout_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/layout_login.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/layout_register.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/layout_register.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/pagamento_succes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/pagamento_succes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/menu/bottom_menu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/menu/bottom_menu.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,10 +54,10 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="resourceFile" />
-        <option value="Kotlin Class" />
-        <option value="layoutResourceFile" />
         <option value="valueResourceFile" />
+        <option value="resourceFile" />
+        <option value="layoutResourceFile" />
+        <option value="Kotlin Class" />
       </list>
     </option>
   </component>
@@ -103,6 +114,9 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Emanuele\Desktop\uni\pmw\LidoBalneare\app\src\main\res\drawable" />
+    </key>
+    <key name="android.template.-608788802">
+      <recent name="com.example.lidobalneare" />
     </key>
     <key name="CopyKotlinDeclarationDialog.RECENTS_KEY">
       <recent name="com.example.lidobalneare" />
@@ -209,7 +223,14 @@
       <option name="project" value="LOCAL" />
       <updated>1691659958386</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="add function">
+      <created>1692198907690</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1692198907690</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

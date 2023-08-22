@@ -9,6 +9,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDate
 import java.util.concurrent.CountDownLatch
 
 class DBMSboundary {
@@ -143,6 +144,227 @@ class DBMSboundary {
             }
 
         })
+    }
+
+    fun getCredenziali(context: Context, callback: QueryReturnCallback<Utente>,email: String, password: String){
+        val query = "SELECT * FROM webmobile.utente where email = \"$email\""
+
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+
+                    //deve restituire solo un oggetto o nessuno
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    Log.i("msg", result.toString())
+
+                    if(result.size() > 0 && checkPassword(result.get(0).asJsonObject.get("pass").asString)){
+                        Utente.getInstance().setId(result.get(0).asJsonObject.get("id").asInt)
+                        Utente.getInstance().setNome(result.get(0).asJsonObject.get("nome").asString)
+                        Utente.getInstance().setCognome(result.get(0).asJsonObject.get("cognome").asString)
+                        Utente.getInstance().setTelefono(result.get(0).asJsonObject.get("telefono").asString)
+                        Utente.getInstance().setEmail(result.get(0).asJsonObject.get("email").asString)
+                    }
+
+                    callback.onReturnValue(Utente.getInstance(), context.getString(R.string.query_successful))
+
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
+
+            /**
+             * @return ritorna true se la password corrisponde altrimenti false
+             */
+            private fun checkPassword(pass: String?): Boolean {
+                return pass != null && pass == password
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+
+        })
+        
+    }
+
+    fun getAltreInfoUtente(context: Context, callback: QueryReturnCallback<Int>,id: String){
+        val queryCartaPrepagata = "SELECT * FROM webmobile.carta_prepagata where utente_id = \"$id\""
+
+        //query per cartaprepagata
+        ClientNetwork.retrofit.select(queryCartaPrepagata).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    Log.i("msg", result.toString())
+
+                    if(result.size() > 0){
+                        try{
+                            //setto la carta
+                            Utente.getInstance().setCarta(
+                                result.get(0).asJsonObject.get("numeroCarta").asString,
+                                result.get(0).asJsonObject.get("cvv").asString,
+                                LocalDate.parse(result.get(0).asJsonObject.get("data_scadenza").asString))
+                        }catch (e: IllegalArgumentException){
+                            Utente.getInstance().generateCarta()
+                        }
+
+                    }
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+
+        })
+
+        val queryCC = "SELECT * FROM webmobile.cc where utente_id = \"$id\""
+
+        //query per cc
+        ClientNetwork.retrofit.select(queryCC).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    Log.i("msg", result.toString())
+
+                    if(result.size() > 0) {
+                        //setto cc
+                        Utente.getInstance().setCc(
+                            result.get(0).asJsonObject.get("numeroConto").asString,
+                            result.get(0).asJsonObject.get("iban").asString,
+                            result.get(0).asJsonObject.get("nomeTitolare").asString
+                        )
+                    }
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+
+        })
+
+        val queryPaypal = "SELECT * FROM webmobile.paypal where utente_id = \"$id\""
+
+        //query per cc
+        ClientNetwork.retrofit.select(queryPaypal).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    Log.i("msg", result.toString())
+                    if(result.size() > 0) {
+                        //setto paypal
+                        Utente.getInstance().setPaypal(
+                            result.get(0).asJsonObject.get("numeroConto").asString,
+                            result.get(0).asJsonObject.get("email").asString,
+                            result.get(0).asJsonObject.get("nomeTitolare").asString,
+                            result.get(0).asJsonObject.get("telefono").asString
+                        )
+                    }
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+
+        })
+
+    }
+
+    /**
+     * @param list deve contenere in ordine 5 elementi: nome, cognome, telefono, email, pass
+      */
+    fun insertUtente(context: Context, callback: QueryReturnCallback<Int>, list: List<String>){
+        if(list.size > 4){
+            val query = "insert into utente(nome, cognome, telefono, email, pass) values ('${list[0]}', '${list[1]}', '${list[2]}', '${list[3]}', '${list[4]}')"
+
+            ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    if(response.isSuccessful){
+                        callback.onReturnValue(200, context.getString(R.string.query_successful))
+                    }else{
+                        callback.onQueryError(context.getString(R.string.query_error))
+                    }
+                }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                   callback.onQueryFailed(context.getString(R.string.query_failed))
+                }
+            })
+        }
+    }
+
+    /**
+     * @param list contiene 7 elementi in questo ordine: nome, cognome, tel, mail, Oldpass, newPass
+     */
+    fun changeDatiUtente(context: Context, callback: QueryReturnCallback<Int>, list: List<String>, id: Int){
+        val query = StringBuilder("UPDATE utente SET")
+        for((i, e) in list.withIndex()){
+            if(e.isNotEmpty()){
+                when(i){
+                    0 -> query.append(" nome = '${list[0]}'")
+                    1 -> query.append(", cognome = '${list[1]}'")
+                    2 -> query.append(", telefono = '${list[2]}'")
+                    3 -> {
+                        //per cambiare la mail devo verificare che non ne esista gia una
+
+                        val queryMail = "select id from webmobile.utente where email = '${list[3]}'"
+
+                        ClientNetwork.retrofit.select(queryMail).enqueue(object : Callback<JsonObject>{
+                            override fun onResponse(
+                                call: Call<JsonObject>,
+                                response: Response<JsonObject>
+                            ) {
+                                if(response.isSuccessful){
+                                   val result = response.body()!!.getAsJsonArray("queryset")
+                                    if(result.size() == 0){
+                                        query.append(", email = '${list[3]}'")
+                                    }
+
+                                }
+                            }
+
+                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+
+                            }
+                        })
+                    }
+                    4 -> {
+                        val queryPass = "select pass from webmobile.utente where id = $id"
+                        ClientNetwork.retrofit.select(queryPass).enqueue(object : Callback<JsonObject>{
+                            override fun onResponse(
+                                call: Call<JsonObject>,
+                                response: Response<JsonObject>
+                            ) {
+                                if(response.isSuccessful){
+                                    val result = response.body()!!.getAsJsonArray("queryset")[0].asJsonObject.get("pass").asString
+                                    if(result == list[4] && list[5].isNotEmpty()){
+                                        query.append(", pass = '${list[5]}'")
+                                    }
+                                }
+                            }
+
+                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                                TODO("Not yet implemented")
+                            }
+                        })
+                    }
+                }
+            }
+        }
+        query.append(" WHERE id = $id")
+        Log.i("msg", query.toString())
 
 
 

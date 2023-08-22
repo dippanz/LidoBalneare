@@ -12,10 +12,9 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 /**
- * str contiene una serie di stringhe, devono essere 3, esse
- * rappresentano Arrivo, Partenza e Hai selezionato della view frag_resoconto
- *
- * strEuro contiene i
+ * @param viewModelHomePage l'immagine di resoconto con descrizione
+ * @param prezzo rappresenta il prezzo di partenza
+ * @param sconto rappresenta lo sconto fatto dalla struttura
  */
 class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private val prezzo: Money, private val sconto: Double): Fragment(R.layout.fragment_resoconto) {
 
@@ -50,14 +49,14 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
         view.findViewById<TextView>(R.id.textPrezzoOriginale).text = getString(R.string.euro_variabile, "${prezzo.units}.${prezzo.nanos}")
 
         val scontoMobile = if(view.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).isChecked){
-            applicaSconto(SCONTO_PAGA_IN_ANTICIPO)
+            applicaSconto(SCONTO_PAGA_IN_ANTICIPO, true)
         }else{
             "0"
         }
 
         view.findViewById<TextView>(R.id.textScontoPagaInAnticipo).text = getString(R.string.euro_variabile_sconto, scontoMobile)
 
-        val sconto = applicaSconto(getSconto())
+        val sconto = applicaSconto(getSconto(), true)
         view.findViewById<TextView>(R.id.textSconto).text = getString(R.string.euro_variabile_sconto, sconto)
         val iva = applicaSconto(IVA)
         view.findViewById<TextView>(R.id.textIva).text = getString(R.string.euro_variabile, iva)
@@ -65,17 +64,36 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
         view.findViewById<TextView>(R.id.textTasse).text = getString(R.string.euro_variabile, tasse)
 
         val totale = somma("${prezzo.units}.${prezzo.nanos}", scontoMobile, sconto, iva, tasse)
-        view.findViewById<TextView>(R.id.textTotale).text = getString(R.string.euro_variabile, totale)
+        val viewTotale = view.findViewById<TextView>(R.id.textTotale)
+        viewTotale.text = getString(R.string.euro_variabile, totale)
 
         val bundle = Bundle()
         bundle.putString("totale", totale)
         parentFragmentManager.setFragmentResult("costoTotale", bundle)
 
+
+        view.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).setOnCheckedChangeListener { compoundButton, b ->
+            if(b){
+                val scontoPagaAnticipo = applicaSconto(SCONTO_PAGA_IN_ANTICIPO, true)
+                view.findViewById<TextView>(R.id.textScontoPagaInAnticipo).text = resources.getString(R.string.euro_variabile_sconto,scontoPagaAnticipo)
+                viewTotale.text = resources.getString(R.string.euro_variabile, somma(totale, scontoPagaAnticipo))
+            }else{
+                view.findViewById<TextView>(R.id.textScontoPagaInAnticipo).text = resources.getString(R.string.euro_variabile_sconto, "0")
+                viewTotale.text = resources.getString(R.string.euro_variabile, totale)
+            }
+        }
+
     }
 
-    private fun applicaSconto(amount: Double): String{
+    private fun applicaSconto(amount: Double, returnNegativeValue: Boolean = false): String{
         val originalAmount = BigDecimal("${prezzo.units}.${prezzo.nanos}")
-        return  originalAmount.multiply(BigDecimal(amount)).setScale(2, RoundingMode.HALF_UP).toString()
+        val result = originalAmount.multiply(BigDecimal(amount)).setScale(2, RoundingMode.HALF_UP)
+
+        return if (returnNegativeValue) {
+            result.negate().toString()
+        } else {
+            result.toString()
+        }
     }
 
     /**
@@ -89,6 +107,4 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
         }
         return sum.setScale(2, RoundingMode.HALF_UP).toString()
     }
-
-
 }

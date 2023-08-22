@@ -1,12 +1,17 @@
 package com.example.lidobalneare
 
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lidobalneare.databinding.ActivityMainPrenotazioneBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -149,21 +154,44 @@ class MainPrenotazione : AppCompatActivity() {
             }, it)
         }
 
+        if(intent.getBooleanExtra("aTesta", false)){
+            //setto listener per capire se impostare moltiplicatore prezzo
+            binding.textNumPersone.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    // Invocato prima che il testo venga modificato
+                }
 
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // Invocato durante la modifica del testo
+                }
 
+                override fun afterTextChanged(s: Editable?) {
+                    // Invocato dopo che il testo è stato modificato
+                    val newText = s.toString()
+                    //ricarico il fragResoconto con il nuovo moltiplicatore todo vedere performance
+                    val t = manager.beginTransaction()
 
+                    val prezzoString = supportFragmentManager.fragments[0].requireActivity().findViewById<TextView>(R.id.textPrezzoOriginale).text.toString()
+                    val prezzoBigDecimal = prezzoString.substringAfter(" ").toBigDecimal()
+                    Log.i("msg", prezzoBigDecimal.toString())
 
+                    val prezzo = MyMoney(prezzoBigDecimal.multiply(BigDecimal(binding.textNumPersone.text.toString().substringBefore(" "))))
+                    t.replace(R.id.fragment_container_resoconto, FragResoconto(intent.getSerializableExtra("cardview") as ViewModelHomePage, prezzo.toMoney(), 0.1))
+                    t.commit()
 
-
+                }
+            })
+        }
 
         //setto comportamento bottone prenota
         binding.buttonPrenota2.setOnClickListener {
+            val i = Intent(this, MainActivitySchermateVuote::class.java)
+            i.putExtra("layout", R.layout.pagamento_succes)
+            finish()
+            startActivity(i)
 
+            //todo implementare prenotazione su server
         }
-
-
-
-
     }
 
     fun getBottomSheet(): BottomSheetBehavior<*> {

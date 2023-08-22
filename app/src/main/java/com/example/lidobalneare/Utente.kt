@@ -18,7 +18,7 @@ class Utente private constructor(){
         }
     }
 
-
+    private var id: Int = -1
     private var nome: String = ""
     private var cognome: String = ""
     private var email: String = ""
@@ -34,12 +34,60 @@ class Utente private constructor(){
         isLoggedIn = true
     }
 
+    fun setId(value: Int){
+        id = value
+    }
+
+    fun getId(): Int{
+        return id
+    }
+
+    // Getter e setter per il nome
+    fun getNome(): String {
+        return nome
+    }
+
+    fun setNome(nuovoNome: String) {
+        nome = nuovoNome
+    }
+
+    // Getter e setter per il cognome
+    fun getCognome(): String {
+        return cognome
+    }
+
+    fun setCognome(nuovoCognome: String) {
+        cognome = nuovoCognome
+    }
+
+    // Getter e setter per l'email
+    fun getEmail(): String {
+        return email
+    }
+
+    fun setEmail(nuovaEmail: String) {
+        email = nuovaEmail
+    }
+
+    // Getter e setter per il telefono
+    fun getTelefono(): String {
+        return telefono
+    }
+
+    fun setTelefono(nuovoTelefono: String) {
+        telefono = nuovoTelefono
+    }
+
     fun clearUtente(){
+        id = -1
         nome = ""
         cognome = ""
         telefono = ""
         email = ""
         isLoggedIn = false
+        carta = null
+        cc = null
+        paypal = null
     }
 
     fun isLoggedIn(): Boolean {
@@ -56,6 +104,14 @@ class Utente private constructor(){
 
     fun getPaypal(): PayPal?{
         return paypal
+    }
+
+    fun setCc(numeroConto: String, iban: String, nomeTitolare: String){
+        cc = ContoCorrente(numeroConto, iban, nomeTitolare)
+    }
+
+    fun setPaypal(numeroConto: String, email: String, nomeTitolare: String, numTelefono: String){
+        paypal = PayPal(numeroConto, email, nomeTitolare, numTelefono)
     }
 
     /**
@@ -92,7 +148,7 @@ class Utente private constructor(){
             carta = CartaPrepagata(numeroCarta, cvv, dataScadenza)
 
         }
-        Log.i("msg", "${carta} ")
+        Log.i("msg", "$carta")
     }
 
     fun clearCarta(): Utente{

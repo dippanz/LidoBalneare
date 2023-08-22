@@ -1,5 +1,6 @@
 package com.example.lidobalneare
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lidobalneare.databinding.ActivityMainProfiloBinding
@@ -20,6 +21,21 @@ class MainProfilo : AppCompatActivity() {
             manager.replace(R.id.containerProfilo, FragLoggin())
         }
         manager.commit()
+
+        //setto parte inferiore profilo
+        binding.navigationBarProfilo.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.homeBottomMenu -> {
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(intent)
+                    finish()
+                    true
+                }
+                else -> false
+            }
+
+        }
 
 
 

@@ -31,6 +31,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/container_included"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentTop="true"
@@ -43,19 +44,27 @@
                 <TextView
                     style="@style/headerText"
                     android:layout_gravity="center"
-                    android:text="App Snipp"
+                    android:text="@string/lido_bagbeach"
                     android:layout_marginTop="40dp"/>
+
                 <include
+                    android:visibility="gone"
+                    android:id="@+id/included_register"
                     layout="@layout/layout_register"/>
+
+                <include
+                    android:id="@+id/included_login"
+                    layout="@layout/layout_login" />
 
             </LinearLayout>
             <ImageView
+                android:id="@+id/image_login_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="30dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:src="@android:drawable/ic_menu_close_clear_cancel" />
         </RelativeLayout>
 
