@@ -34,7 +34,10 @@ class FragProfilo: Fragment(R.layout.frag_profilo) {
             i.putExtra("frag", "lemierecensioni")
             startActivity(i)
         }
+    }
 
+    override fun onResume() {
+        super.onResume()
         binding.textViewNome.text = Utente.getInstance().getNome()
         binding.textMail.text = resources.getString(R.string.email, Utente.getInstance().getEmail())
         binding.textNomeCognome.text = resources.getString(R.string.nome_e_cognome, "${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}")

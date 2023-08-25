@@ -1,0 +1,4 @@
+package com.example.lidobalneare
+
+class ModelRecensioni(val titolo: String, val desc: String, val nomeP: String, val valutazione: Float) {
+}

@@ -27,12 +27,14 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
 
     //sconto fatto dal proprietario
     private fun getSconto(): Double{
-        return if(sconto < 0 || sconto > 1){
+        return if(sconto <= 0 || sconto > 1){
             0.0
         }else{
             sconto
         }
     }
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

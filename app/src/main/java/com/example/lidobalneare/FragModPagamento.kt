@@ -2,15 +2,30 @@ package com.example.lidobalneare
 
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.RadioGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.type.Money
+import com.example.lidobalneare.databinding.FragModPagamentoBinding
 import java.math.BigDecimal
+import java.time.LocalDate
 
 class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
+
+    private lateinit var binding: FragModPagamentoBinding
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragModPagamentoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -18,54 +33,25 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
 
         val manager = parentFragmentManager
         val transaction = manager.beginTransaction()
-
-        transaction.add(
-            R.id.frag_resoconto,
-            FragResoconto(
-                arguments?.getSerializable("viewModel") as ViewModelHomePage,
-                Money.newBuilder().setCurrencyCode("EUR").setUnits(10).setNanos(50).build(),
-                0.05
-            )
-        )
+        val frag = FragResoconto(arguments?.getSerializable("cardview") as ViewModelHomePage,
+            MyMoney(BigDecimal(requireArguments().getString("prezzoOriginale"))).toMoney(),
+            0.0)
+        transaction.replace(R.id.frag_resoconto_mod_pagamento, frag)
         transaction.commit()
 
-        var importoMoney = MyMoney()
-
-        parentFragmentManager.setFragmentResultListener("costoTotale", this) { requestKey, bundle ->
-
-            val importoTotale = bundle.getString("totale")?.toBigDecimal()
-
-            if (importoTotale != null) {
-                importoMoney = MyMoney(
-                    Money.newBuilder().setCurrencyCode("EUR").setUnits(
-                        importoTotale.abs().toBigInteger().toLong()
-                    ).setNanos(
-                        importoTotale.abs().remainder(
-                            BigDecimal.ONE
-                        ).toInt()
-                    ).build()
-                )
-            } else {
-                Log.i("msgError", "conversione totale fallita")
-            }
-
-        }
 
         var radioButton = 0
         view.findViewById<RadioGroup>(R.id.radioGroup).setOnCheckedChangeListener { group, checkedId ->
             radioButton = when (checkedId) {
                 R.id.radioButtonPayPal -> {
-                    Log.i("msg", "1")
                     1
                 }
 
                 R.id.radioButtonCarta -> {
-                    Log.i("msg", "2")
                     2
                 }
 
                 R.id.radioButtonBonifico -> {
-                    Log.i("msg", "3")
                     3
                 }
 
@@ -75,18 +61,32 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
 
         view.findViewById<Button>(R.id.buttonPaga).setOnClickListener {
 
-                //TODO implementare metodo simulato per la gestione dei pagamenti
-                if (radioButton == 1) {
+            val importoTotale = binding.fragResocontoModPagamento.findViewById<TextView>(R.id.textTotale).text.toString().split(" ")[1]
 
-                } else if (radioButton == 2) {
+            when (radioButton) {
+                1 -> {
+                    //paypal
 
+                }
 
+                2 -> {
                     try {
-                        //se il pagamento è stato effettuato con successo
-                        if (Utente.getInstance().getCarta()?.effettuaPagamento(importoMoney) == true) {
-                            //mostro il frag di avvenuto pagamento
+                        if (Utente.getInstance().getCarta()?.effettuaPagamento(MyMoney(BigDecimal(importoTotale))) == true) {
+                           //inserisco prenotazione nel db
+                            val bundleQuery = requireArguments().getBundle("bundleQuery")
+                            val startDate = bundleQuery?.getSerializable("startDate") as LocalDate
+                            val endDate = bundleQuery.getSerializable("endDate") as LocalDate
+                            val numPerson = bundleQuery.getInt("numPerson")
+                            val nomeServizio = bundleQuery.getString("nomeServizio") as String
+
+                            DBMSboundary().insertPrenotazione(requireContext(), true, startDate, endDate,
+                                nomeServizio, Utente.getInstance().getId(), numPerson)
+
+                            Log.i("msg", "arrivo qua")
+
+                            //se il pagamento è stato effettuato con successo
                             val t = parentFragmentManager.beginTransaction()
-                            t.replace(R.id.pagamento_view_frag, FragPagamentSucces())
+                            t.replace(R.id.fragment_container_schermate_vuote, FragPagamentSucces())
                             t.commit()
 
                         } else {
@@ -97,22 +97,33 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
 
                     } catch (e: IllegalStateException) {
                         e.printStackTrace()
-
-                        //todo richiedere inserimento metodo di pagamento
                         Utente.getInstance().clearCarta().generateCarta()
                     }
+                }
+                3 -> {
 
-
-                } else if (radioButton == 3) {
-
-                } else {
+                }
+                else -> {
                     Toast.makeText(
                         requireContext(),
                         "Seleziona un metodo di pagamento",
                         Toast.LENGTH_LONG
                     ).show()
                 }
+            }
 
         }
+
+
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        val checkBox = binding.fragResocontoModPagamento.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo)
+        checkBox.isChecked = true
+        checkBox.isClickable = false
+    }
+
+
 }

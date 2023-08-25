@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.example.lidobalneare.databinding.FragModificaProfiloBinding
@@ -46,7 +47,13 @@ class FragModProfilo: Fragment(R.layout.frag_modifica_profilo) {
 
             DBMSboundary().changeDatiUtente(requireContext(), object : QueryReturnCallback<Int>{
                 override fun onReturnValue(response: Int, message: String) {
-                    TODO("Not yet implemented")
+                    if(response == 200){
+                        Toast.makeText(requireContext(), "modifiche applicate!", Toast.LENGTH_SHORT).show()
+
+                        val t = parentFragmentManager.beginTransaction()
+                        t.replace(R.id.containerAreaPersonale, FragImpostazioni())
+                        t.commit()
+                    }
                 }
 
                 override fun onQueryFailed(fail: String) {
@@ -57,9 +64,6 @@ class FragModProfilo: Fragment(R.layout.frag_modifica_profilo) {
                     TODO("Not yet implemented")
                 }
             }, list, Utente.getInstance().getId())
-
-
-
 
 
         }

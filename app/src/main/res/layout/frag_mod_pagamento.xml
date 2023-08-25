@@ -21,7 +21,6 @@
         android:id="@+id/radioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.187"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,7 +30,7 @@
             android:id="@+id/radioButtonPayPal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:text="@string/paga_con_paypal" />
 
         <RadioButton
@@ -51,7 +50,7 @@
 
     <LinearLayout
         android:id="@+id/linearLayout5"
-        android:layout_width="350dp"
+        android:layout_width="370dp"
         android:layout_height="380dp"
         android:layout_marginTop="8dp"
         android:background="@drawable/rectangle_shape_bold"
@@ -64,10 +63,10 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="8dp">
+            android:padding="2dp">
 
             <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/frag_resoconto"
+                android:id="@+id/frag_resoconto_mod_pagamento"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

@@ -107,9 +107,10 @@
         android:orientation="vertical">
 
         <ScrollView
-            android:contentDescription="@string/listacentrale"
             android:layout_width="match_parent"
-            android:layout_height="430dp">
+            android:layout_height="match_parent"
+            android:layout_marginBottom="80dp"
+            android:contentDescription="@string/listacentrale">
 
             <LinearLayout
                 android:layout_width="match_parent"

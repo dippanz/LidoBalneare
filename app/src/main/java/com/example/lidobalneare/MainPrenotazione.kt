@@ -6,6 +6,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +14,8 @@ import com.example.lidobalneare.databinding.ActivityMainPrenotazioneBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.Month
 import java.util.Calendar
 import java.util.Locale
 
@@ -21,6 +24,7 @@ class MainPrenotazione : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainPrenotazioneBinding
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<*>
+    private lateinit var viewModelCaricato: ViewModelHomePage
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -176,27 +180,99 @@ class MainPrenotazione : AppCompatActivity() {
                     Log.i("msg", prezzoBigDecimal.toString())
 
                     val prezzo = MyMoney(prezzoBigDecimal.multiply(BigDecimal(binding.textNumPersone.text.toString().substringBefore(" "))))
-                    t.replace(R.id.fragment_container_resoconto, FragResoconto(intent.getSerializableExtra("cardview") as ViewModelHomePage, prezzo.toMoney(), 0.1))
+                    viewModelCaricato = (intent.getSerializableExtra("cardview") as ViewModelHomePage)
+                    t.replace(R.id.fragment_container_resoconto, FragResoconto(viewModelCaricato, prezzo.toMoney(), 0.1))
                     t.commit()
 
                 }
             })
         }
 
+
+
+
         //setto comportamento bottone prenota
         binding.buttonPrenota2.setOnClickListener {
-            val i = Intent(this, MainActivitySchermateVuote::class.java)
-            i.putExtra("layout", R.layout.pagamento_succes)
-            finish()
-            startActivity(i)
+            val (startDate, endDate) = parseDateRange(binding.textDate.text.toString())
+            val numPerson = binding.textNumPersone.text.toString().split(" ")[0].toInt()
 
-            //todo implementare prenotazione su server
+
+            
+
+
+            if(binding.fragmentContainerResoconto.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).isChecked){
+                //se paga in anticipo allora mostro fragModPagamento
+                val i = Intent(this, MainActivitySchermateVuote::class.java)
+                i.putExtra("layout", R.layout.frag_mod_pagamento)
+                val bundle = Bundle()
+
+                val bundleQuery = Bundle()
+                bundleQuery.putString("nomeServizio", intent.getStringExtra("nome"))
+                bundleQuery.putSerializable("startDate", startDate)
+                bundleQuery.putSerializable("endDate", endDate)
+                bundleQuery.putInt("numPerson", numPerson)
+
+                bundle.putBundle("bundleQuery", bundleQuery)
+                bundle.putString("prezzoOriginale", binding.fragmentContainerResoconto.findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                bundle.putSerializable("cardview", intent.getSerializableExtra("cardview"))
+                i.putExtra("fragResData", bundle )
+                startActivity(i)
+            }else {
+                //inserisco prenotazione
+                intent.getStringExtra("nome")?.let { it1 ->
+                    DBMSboundary().insertPrenotazione(applicationContext, false, startDate, endDate,
+                        it1, Utente.getInstance().getId(), numPerson)
+                }
+
+                //mostro avvenuta prenotazione
+                val i = Intent(this, MainActivitySchermateVuote::class.java)
+                i.putExtra("layout", R.layout.pagamento_succes)
+                i.putExtra("valueText", "Prenotazione avvenuta con successo!")
+                finish()
+                startActivity(i)
+            }
         }
     }
 
     fun getBottomSheet(): BottomSheetBehavior<*> {
         return mBottomSheetBehavior
     }
+
+    private fun parseDateRange(dateString: String): Pair<LocalDate, LocalDate> {
+        val parts = dateString.split(" - ")
+        val startDateString = parts[0]
+        val endDateString = if (parts.size > 1) parts[1] else parts[0]
+
+        val startDate = parseDateString(startDateString)
+        val endDate = parseDateString(endDateString)
+
+        return Pair(startDate, endDate)
+    }
+
+    private fun parseDateString(dateString: String): LocalDate {
+        val monthMap = mapOf(
+            "gen" to Month.JANUARY,
+            "feb" to Month.FEBRUARY,
+            "mar" to Month.MARCH,
+            "apr" to Month.APRIL,
+            "mag" to Month.MAY,
+            "giu" to Month.JUNE,
+            "lug" to Month.JULY,
+            "ago" to Month.AUGUST,
+            "set" to Month.SEPTEMBER,
+            "ott" to Month.OCTOBER,
+            "nov" to Month.NOVEMBER,
+            "dic" to Month.DECEMBER
+        )
+
+        val parts = dateString.split(" ")
+        val dayOfMonth = parts[1].toInt()
+        val month = monthMap[parts[2]] ?: throw IllegalArgumentException("Month not recognized")
+        val currentYear = LocalDate.now().year
+
+        return LocalDate.of(currentYear, month, dayOfMonth)
+    }
+
 
 
 

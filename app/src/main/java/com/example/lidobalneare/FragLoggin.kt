@@ -104,11 +104,11 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
         binding.includedRegister.registerButton.setOnClickListener {
             val list = ArrayList<String>()
             val viewRegister = binding.includedRegister
-            if(isPasswordStrong(viewRegister.editTextPass.text.toString())
+            if(DBMSboundary().isPasswordStrong(viewRegister.editTextPass.text.toString())
                 && viewRegister.editTextNome.text.isNotEmpty()
                 && viewRegister.editTextCognome.text.isNotEmpty()
-                && isPhoneNumberValid(viewRegister.editTextTel.text.toString())
-                && isEmailValid(viewRegister.editTextMail.text.toString())){
+                && DBMSboundary().isPhoneNumberValid(viewRegister.editTextTel.text.toString())
+                && DBMSboundary().isEmailValid(viewRegister.editTextMail.text.toString())){
 
                 list.add(viewRegister.editTextNome.text.toString())
                 list.add(viewRegister.editTextCognome.text.toString())
@@ -150,23 +150,7 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
         }
     }
 
-    private fun isPhoneNumberValid(input: String): Boolean {
-        // Rimuove tutti i caratteri non numerici dalla stringa
-        val digitsOnly = input.replace("[^\\d]".toRegex(), "")
-        return digitsOnly.length == 10
-    }
 
-    private fun isEmailValid(email: String): Boolean {
-        val pattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+"
-        return email.matches(Regex(pattern))
-    }
-
-    private fun isPasswordStrong(password: String): Boolean {
-        // Esempio di controllo per una password "forte":
-        // Almeno 8 caratteri, almeno una lettera maiuscola, almeno un numero
-        val pattern = "^(?=.*[A-Z])(?=.*\\d).{8,}$"
-        return password.matches(Regex(pattern))
-    }
 
 
 
