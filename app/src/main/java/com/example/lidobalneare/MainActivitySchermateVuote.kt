@@ -35,7 +35,13 @@ class MainActivitySchermateVuote : AppCompatActivity() {
                 manager.replace(R.id.fragment_container_schermate_vuote, frag)
             }
 
-
+            R.layout.frag_recensioni -> {
+                val frag = FragRecensioni()
+                val bundle = Bundle()
+                bundle.putSerializable("response", intent.getSerializableExtra("response"))
+                frag.arguments = bundle
+                manager.replace(R.id.fragment_container_schermate_vuote, frag)
+            }
         }
         manager.commit()
 

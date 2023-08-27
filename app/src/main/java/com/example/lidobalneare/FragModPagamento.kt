@@ -35,7 +35,7 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
         val transaction = manager.beginTransaction()
         val frag = FragResoconto(arguments?.getSerializable("cardview") as ViewModelHomePage,
             MyMoney(BigDecimal(requireArguments().getString("prezzoOriginale"))).toMoney(),
-            0.0)
+            0.1)
         transaction.replace(R.id.frag_resoconto_mod_pagamento, frag)
         transaction.commit()
 

@@ -12,10 +12,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lidobalneare.databinding.ActivityMainPrenotazioneBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import java.io.Serializable
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Month
+import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
 
@@ -158,11 +160,36 @@ class MainPrenotazione : AppCompatActivity() {
             }, it)
         }
 
+
+
         if(intent.getBooleanExtra("aTesta", false)){
+
+            //prezzo originale preso all'inizio
+            var prezzoTmp: BigDecimal? = null
+
+            var prezzoPersoneTmp: BigDecimal? = null
+            //prezzo che varia al variare delle persone che metto
+            var prezzoDatetmp: BigDecimal? = null
+
             //setto listener per capire se impostare moltiplicatore prezzo
             binding.textNumPersone.addTextChangedListener(object : TextWatcher {
+
+                var beforeChange = 0
+
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    // Invocato prima che il testo venga modificato
+                    if(prezzoTmp == null){
+                        prezzoTmp = BigDecimal(
+                            supportFragmentManager.fragments[0].requireActivity().
+                            findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                    }
+
+                    val (startDate, endDate) = parseDateRange(binding.textDate.text.toString())
+                    if(prezzoPersoneTmp == null){
+                        prezzoPersoneTmp = prezzoTmp!!.multiply(BigDecimal(ChronoUnit.DAYS.between(startDate, endDate) + 1))
+                    }
+
+                    prezzoDatetmp = null
+                    beforeChange = s.toString().split(" ")[0].toInt()
                 }
 
                 override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -170,16 +197,94 @@ class MainPrenotazione : AppCompatActivity() {
                 }
 
                 override fun afterTextChanged(s: Editable?) {
-                    // Invocato dopo che il testo è stato modificato
-                    val newText = s.toString()
-                    //ricarico il fragResoconto con il nuovo moltiplicatore todo vedere performance
+                    //ricarico il fragResoconto con il nuovo moltiplicatore
+                    val prezzoAttuale = BigDecimal(
+                        supportFragmentManager.fragments[0].requireActivity().
+                        findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                    val numAttuale = s.toString().split(" ")[0].toInt()
+                    val prezzo =
+                    if(beforeChange < numAttuale){
+                        val increase = numAttuale - beforeChange
+                        MyMoney(
+                            prezzoAttuale.add(
+                                prezzoPersoneTmp?.multiply(
+                                    BigDecimal(increase)) ?: BigDecimal(1)
+                        ))
+
+                    }else  if(beforeChange > numAttuale){
+                        val decrease = beforeChange - numAttuale
+                        MyMoney(
+                            prezzoAttuale.subtract(
+                                prezzoPersoneTmp?.multiply(
+                                    BigDecimal(decrease)) ?: BigDecimal(1)
+                            ))
+                    }else{
+                        MyMoney(prezzoAttuale)
+                    }
+
                     val t = manager.beginTransaction()
+                    viewModelCaricato = (intent.getSerializableExtra("cardview") as ViewModelHomePage)
+                    t.replace(R.id.fragment_container_resoconto, FragResoconto(viewModelCaricato, prezzo.toMoney(), 0.1))
+                    t.commit()
 
-                    val prezzoString = supportFragmentManager.fragments[0].requireActivity().findViewById<TextView>(R.id.textPrezzoOriginale).text.toString()
-                    val prezzoBigDecimal = prezzoString.substringAfter(" ").toBigDecimal()
-                    Log.i("msg", prezzoBigDecimal.toString())
+                }
+            })
 
-                    val prezzo = MyMoney(prezzoBigDecimal.multiply(BigDecimal(binding.textNumPersone.text.toString().substringBefore(" "))))
+            binding.textDate.addTextChangedListener(object : TextWatcher {
+
+                var rangeBeforeChange = 0L
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    if(prezzoTmp == null){
+                        prezzoTmp = BigDecimal(
+                            supportFragmentManager.fragments[0].requireActivity().
+                            findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                    }
+
+                    if(prezzoDatetmp == null){
+
+                        prezzoDatetmp = prezzoTmp?.multiply(BigDecimal(
+                            supportFragmentManager.fragments[0].requireActivity().
+                            findViewById<TextView>(R.id.textNumPersone).text.toString().split(" ")[0]))
+                    }
+
+                    val (startDate, endDate) = parseDateRange(s.toString())
+                    prezzoPersoneTmp = null
+                    rangeBeforeChange = ChronoUnit.DAYS.between(startDate, endDate) + 1
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // Invocato durante la modifica del testo
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    //ricarico il fragResoconto con il nuovo moltiplicatore
+                    val prezzoAttuale = BigDecimal(
+                        supportFragmentManager.fragments[0].requireActivity().
+                        findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                    val (startDate, endDate) = parseDateRange(s.toString())
+                    val rangeAttuale = ChronoUnit.DAYS.between(startDate, endDate) + 1
+                    val prezzo =
+                        if(rangeBeforeChange < rangeAttuale){
+                            val increase = rangeAttuale - rangeBeforeChange
+                            MyMoney(
+                                prezzoAttuale.add(
+                                    prezzoDatetmp?.multiply(
+                                        BigDecimal(increase)) ?: BigDecimal(1)
+                                ))
+
+                        }else  if(rangeBeforeChange > rangeAttuale){
+                            val decrease = rangeBeforeChange - rangeAttuale
+                            MyMoney(
+                                prezzoAttuale.subtract(
+                                    prezzoDatetmp?.multiply(
+                                        BigDecimal(decrease)) ?: BigDecimal(1)
+                                ))
+                        }else{
+                            MyMoney(prezzoAttuale)
+                        }
+
+                    val t = manager.beginTransaction()
                     viewModelCaricato = (intent.getSerializableExtra("cardview") as ViewModelHomePage)
                     t.replace(R.id.fragment_container_resoconto, FragResoconto(viewModelCaricato, prezzo.toMoney(), 0.1))
                     t.commit()
@@ -232,6 +337,64 @@ class MainPrenotazione : AppCompatActivity() {
                 startActivity(i)
             }
         }
+
+        DBMSboundary().getRecensioni(applicationContext, object : QueryReturnCallback<List<ModelRecensioni>>{
+            override fun onReturnValue(response: List<ModelRecensioni>, message: String) {
+                when(response.size){
+                    0 -> {}
+                    1 -> {
+                        binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
+                        binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
+
+                        binding.includedRecensioni.titoloRecensione2.visibility = View.GONE
+                        binding.includedRecensioni.ratingBarRecensioniFatte2.visibility = View.GONE
+
+                        binding.includedRecensioni.titoloRecensione3.visibility = View.GONE
+                        binding.includedRecensioni.ratingBarRecensioniFatte3.visibility = View.GONE
+
+                    }
+
+                    2 -> {
+                        binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
+                        binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
+
+                        binding.includedRecensioni.titoloRecensione2.text = response[1].titolo
+                        binding.includedRecensioni.ratingBarRecensioniFatte2.rating = response[1].valutazione
+
+                        binding.includedRecensioni.titoloRecensione3.visibility = View.GONE
+                        binding.includedRecensioni.ratingBarRecensioniFatte3.visibility = View.GONE
+
+                    }
+
+                    else -> {
+                        binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
+                        binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
+
+                        binding.includedRecensioni.titoloRecensione2.text = response[1].titolo
+                        binding.includedRecensioni.ratingBarRecensioniFatte2.rating = response[1].valutazione
+
+                        binding.includedRecensioni.titoloRecensione3.text = response[1].titolo
+                        binding.includedRecensioni.ratingBarRecensioniFatte3.rating = response[1].valutazione
+                    }
+                }
+
+                binding.includedRecensioni.parent2Recensioni.setOnClickListener {
+                    val i = Intent(applicationContext, MainActivitySchermateVuote::class.java)
+                    i.putExtra("layout", R.layout.frag_recensioni)
+                    i.putExtra("response", response as Serializable)
+                    startActivity(i)
+                }
+            }
+
+            override fun onQueryFailed(fail: String) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onQueryError(error: String) {
+                TODO("Not yet implemented")
+            }
+        }, null)
+
     }
 
     fun getBottomSheet(): BottomSheetBehavior<*> {

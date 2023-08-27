@@ -12,28 +12,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e65106b8-4843-490c-bc41-31ac6e761667" name="Changes" comment="add function">
+      <change afterPath="$PROJECT_DIR$/app/src/main/res/layout/recensioni_servizi.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/AdapterText.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/DBMSboundary.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/DBMSboundary.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragLoggin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragLoggin.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragModPagamento.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragModPagamento.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragModProfilo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragModProfilo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragPagamentSucces.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragPagamentSucces.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragProfilo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragProfilo.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragRecensioni.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragRecensioni.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragResoconto.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragResoconto.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/FragmentDatTesto.kt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/GestoreDatiTesto.kt" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainActivitySchermateVuote.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainActivitySchermateVuote.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainPrenotazione.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/MainPrenotazione.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/ModelRecensioni.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/lidobalneare/ModelRecensioni.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_prenotazione.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_main_prenotazione.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/card_view_text.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/frag_mod_pagamento.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/frag_mod_pagamento.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/frag_recensioni.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/frag_recensioni.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_resoconto.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_resoconto.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/pagamento_succes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/pagamento_succes.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/styles.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,8 +40,8 @@
       <list>
         <option value="valueResourceFile" />
         <option value="resourceFile" />
-        <option value="layoutResourceFile" />
         <option value="Kotlin Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -232,7 +221,14 @@
       <option name="project" value="LOCAL" />
       <updated>1692712195724</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="add function">
+      <created>1692975207957</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1692975207957</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

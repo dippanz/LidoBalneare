@@ -24,27 +24,39 @@ class FragRecensioni: Fragment(R.layout.frag_recensioni) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        DBMSboundary().getRecensioni(requireContext(), object : QueryReturnCallback<List<ModelRecensioni>>{
-            override fun onReturnValue(response: List<ModelRecensioni>, message: String) {
-                if(response.isEmpty()){
-                    binding.recyclerviewRecensioni.visibility = View.GONE
-                    binding.nessunaRecensioneAvviso.visibility = View.VISIBLE
-                }else{
-                    binding.recyclerviewRecensioni.visibility = View.VISIBLE
-                    binding.nessunaRecensioneAvviso.visibility = View.GONE
-                    binding.recyclerviewRecensioni.layoutManager = LinearLayoutManager(requireContext())
-                    binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), response)
+        val serializableList = arguments?.getSerializable("response") as? List<*>
+        val list = serializableList?.filterIsInstance<ModelRecensioni>()
+
+        if(!list.isNullOrEmpty()){
+            binding.titleRecensioni.text = resources.getString(R.string.title_recensioni)
+            binding.recyclerviewRecensioni.visibility = View.VISIBLE
+            binding.nessunaRecensioneAvviso.visibility = View.GONE
+            binding.recyclerviewRecensioni.layoutManager = LinearLayoutManager(requireContext())
+            binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), list)
+
+        }else{
+            DBMSboundary().getRecensioni(requireContext(), object : QueryReturnCallback<List<ModelRecensioni>>{
+                override fun onReturnValue(response: List<ModelRecensioni>, message: String) {
+                    if(response.isEmpty()){
+                        binding.recyclerviewRecensioni.visibility = View.GONE
+                        binding.nessunaRecensioneAvviso.visibility = View.VISIBLE
+                    }else{
+                        binding.recyclerviewRecensioni.visibility = View.VISIBLE
+                        binding.nessunaRecensioneAvviso.visibility = View.GONE
+                        binding.recyclerviewRecensioni.layoutManager = LinearLayoutManager(requireContext())
+                        binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), response)
+                    }
                 }
-            }
 
-            override fun onQueryFailed(fail: String) {
-                Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
-            }
+                override fun onQueryFailed(fail: String) {
+                    Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+                }
 
-            override fun onQueryError(error: String) {
-                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-            }
-        }, Utente.getInstance().getId())
+                override fun onQueryError(error: String) {
+                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                }
+            }, Utente.getInstance().getId())
+        }
 
 
     }

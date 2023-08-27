@@ -467,8 +467,12 @@ class DBMSboundary {
         return password.matches(Regex(pattern))
     }
 
-    fun getRecensioni(context: Context, callback: QueryReturnCallback<List<ModelRecensioni>>, id: Int){
-        val query = "select * from webmobile.recensioni where utente_id = $id"
+    fun getRecensioni(context: Context, callback: QueryReturnCallback<List<ModelRecensioni>>, id: Int?){
+        val query =  if(id != null){
+            "select * from webmobile.recensioni where utente_id = $id"
+        }else{
+            "select * from webmobile.recensioni"
+        }
 
         ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {

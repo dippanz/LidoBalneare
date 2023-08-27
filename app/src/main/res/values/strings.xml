@@ -143,4 +143,6 @@
     <string name="le_tue_recensioniMaiuscolo">LE TUE RECENSIONI</string>
     <string name="pubblicata_da_1s">Pubblicata da %1$s</string>
     <string name="non_ci_sono_recensioni_al_momento">Non ci sono recensioni al momento</string>
+
+    <string name="title_recensioni">RECENSIONI UTENTI</string>
 </resources>

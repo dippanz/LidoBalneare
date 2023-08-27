@@ -1,4 +1,6 @@
 package com.example.lidobalneare
 
-class ModelRecensioni(val titolo: String, val desc: String, val nomeP: String, val valutazione: Float) {
+import java.io.Serializable
+
+class ModelRecensioni(val titolo: String, val desc: String, val nomeP: String, val valutazione: Float) : Serializable {
 }
