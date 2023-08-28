@@ -19,9 +19,11 @@
         android:padding="5dp">
 
         <LinearLayout
+            android:id="@+id/rec1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:layout_margin="5dp"
             >
 
@@ -50,10 +52,11 @@
         </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/rec2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-
+        android:visibility="gone"
         android:orientation="horizontal">
 
         <TextView
@@ -84,7 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
-
+        android:visibility="gone"
+        android:id="@+id/rec3"
         android:orientation="horizontal">
 
         <TextView
@@ -110,7 +114,19 @@
 
 
     </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textSize="13sp"
+            android:textColor="@color/grigio"
+            android:text="@string/clicca_per_vedere_recensioni"/>
+
     </LinearLayout>
+
+
+
 
 
 

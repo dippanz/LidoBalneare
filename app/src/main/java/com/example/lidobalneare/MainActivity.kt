@@ -106,6 +106,18 @@ class MainActivity : AppCompatActivity() {
                     startActivity(i)
                     true
                 }
+
+                R.id.buttonPrenotazioni -> {
+                    if(Utente.getInstance().isLoggedIn()){
+                        val i = Intent(this, MainActivity2::class.java)
+                        startActivity(i)
+                    }else{
+                        val i = Intent(this, MainActivitySchermateVuote::class.java)
+                        i.putExtra("layout", R.layout.frag_loggin)
+                        startActivity(i)
+                    }
+                    true
+                }
                 else -> false
             }
 

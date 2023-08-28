@@ -10,7 +10,10 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.CountDownLatch
 
 class DBMSboundary {
@@ -467,16 +470,19 @@ class DBMSboundary {
         return password.matches(Regex(pattern))
     }
 
-    fun getRecensioni(context: Context, callback: QueryReturnCallback<List<ModelRecensioni>>, id: Int?){
-        val query =  if(id != null){
-            "select * from webmobile.recensioni where utente_id = $id"
-        }else{
-            "select * from webmobile.recensioni"
-        }
+    fun getRecensioniUtente(context: Context, callback: QueryReturnCallback<List<ModelRecensioni>>, id: Int){
+        getRecensioni(context, callback, "select * from webmobile.recensioni where utente_id = $id")
+    }
+
+    fun getRecensioniServizio(context: Context, callback: QueryReturnCallback<List<ModelRecensioni>>, nomeServizio: String){
+        getRecensioni(context, callback, "select * from webmobile.recensioni where nomeServizio = '$nomeServizio'")
+    }
+
+    private fun getRecensioni(context: Context, callback: QueryReturnCallback<List<ModelRecensioni>>, query: String){
+        Log.i("msg", query)
 
         ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                Log.i("msg", response.toString())
                 if(response.isSuccessful){
                     val result = response.body()!!.getAsJsonArray("queryset")
                     val listResult = ArrayList<ModelRecensioni>()
@@ -487,7 +493,8 @@ class DBMSboundary {
                                 i.asJsonObject.get("titolo").asString,
                                 i.asJsonObject.get("descrizione").asString,
                                 i.asJsonObject.get("nomeP").asString,
-                                i.asJsonObject.get("valutazione").asFloat
+                                i.asJsonObject.get("valutazione").asFloat,
+                                i.asJsonObject.get("nomeServizio").asString
                             )
                         )
                     }
@@ -503,9 +510,6 @@ class DBMSboundary {
                 callback.onQueryFailed(context.getString(R.string.query_failed))
             }
         })
-
-
-
     }
 
     fun insertPrenotazione(context: Context, pagInApp: Boolean, dataPrenotazioneInizio: LocalDate,dataPrenotazioneFine: LocalDate, nomeServizio: String, id: Int, numpersone: Int){
@@ -524,6 +528,71 @@ class DBMSboundary {
             }
         })
 
+
+    }
+
+    fun insertRecensione(context: Context, titolo: String, desc: String, nomePublic: String, nomeServizio: String, valutazione: Float, id: Int){
+        val queryInsert =  "insert into recensioni(titolo, descrizione, nomeP, nomeServizio, valutazione, utente_id) values "+
+                "('$titolo', '$desc', '$nomePublic', '$nomeServizio', $valutazione, $id)"
+
+        ClientNetwork.retrofit.insert(queryInsert).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    Toast.makeText(context, context.getString(R.string.query_successful), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    fun getPrenotazioni(context: Context, callback: QueryReturnCallback<List<ModelPrenotazione>>, id: Int){
+        val query = "select * from webmobile.prenotazioni where utente_id = $id"
+
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    val result = response.body()!!.getAsJsonArray("queryset")
+                    val listResult = ArrayList<ModelPrenotazione>()
+
+                    for(i in result){
+                        val dateFormatStringData = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                        val dataI = dateFormatStringData.parse(i.asJsonObject.get("dataPrenotazioneInizio").asString)
+                        val dataF = dateFormatStringData.parse(i.asJsonObject.get("dataPrenotazioneFine").asString)
+
+                        // Formatta la data in "EEE dd MMM" (sab 12 ago)
+                        val dateFormat = SimpleDateFormat("EEE dd MMM", Locale.ITALIAN)
+
+                        val data = if(dataI == dataF){
+                            dateFormat.format(dataF ?: Calendar.getInstance().time)
+                        }else{
+                            val dateIString = dateFormat.format(dataI ?: Calendar.getInstance().time)
+                            val dateFString = dateFormat.format(dataF ?: Calendar.getInstance().time)
+                            "$dateIString - $dateFString"
+                        }
+
+                        listResult.add(
+                            ModelPrenotazione(
+                                i.asJsonObject.get("id").asInt,
+                                data,
+                                i.asJsonObject.get("numPersone").asInt
+                            )
+                        )
+                    }
+                    callback.onReturnValue(listResult,context.getString(R.string.query_successful) )
+
+
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+        })
 
     }
 

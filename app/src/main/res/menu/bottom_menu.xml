@@ -5,7 +5,7 @@
         android:icon="@drawable/ic_home"
         android:title="@string/home"  />
     <item
-        android:id="@+id/buttonPrenota"
+        android:id="@+id/buttonPrenotazioni"
         android:icon="@drawable/ic_prenota"
         android:title="@string/prenotazioni" />
 

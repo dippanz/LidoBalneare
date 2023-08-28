@@ -145,4 +145,12 @@
     <string name="non_ci_sono_recensioni_al_momento">Non ci sono recensioni al momento</string>
 
     <string name="title_recensioni">RECENSIONI UTENTI</string>
+    <string name="aggiungi_recensione">Aggiungi recensione</string>
+    <string name="pubblica_recensione">Pubblica recensione</string>
+    <string name="inserisci_una_recensione">Inserisci una descrizione del servizio</string>
+    <string name="inserisci_titolo_recensione">Inserisci titolo recensione</string>
+    <string name="clicca_per_vedere_recensioni">Clicca per vedere recensioni</string>
+    <string name="codice_prenotazione_1_s">Codice prenotazione: %1$s</string>
+    <string name="n_persone_1_s">N. Persone: %1$s</string>
+    <string name="data_1_s">Data: %1$s</string>
 </resources>

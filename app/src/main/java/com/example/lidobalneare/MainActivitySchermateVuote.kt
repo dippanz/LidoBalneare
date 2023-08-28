@@ -39,6 +39,7 @@ class MainActivitySchermateVuote : AppCompatActivity() {
                 val frag = FragRecensioni()
                 val bundle = Bundle()
                 bundle.putSerializable("response", intent.getSerializableExtra("response"))
+                bundle.putString("nomeServizio", intent.getStringExtra("nomeServizio"))
                 frag.arguments = bundle
                 manager.replace(R.id.fragment_container_schermate_vuote, frag)
             }

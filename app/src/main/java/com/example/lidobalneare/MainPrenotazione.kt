@@ -94,6 +94,7 @@ class MainPrenotazione : AppCompatActivity() {
                         binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.white))
                         binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.white))
                         binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.parentRecensioni.setBackgroundColor(resources.getColor(R.color.white))
 
                         if(manager.backStackEntryCount != 0){
                             manager.popBackStack()
@@ -108,6 +109,7 @@ class MainPrenotazione : AppCompatActivity() {
                         binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.trasparente))
                         binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.trasparente))
                         binding.parentPrenotazione.setBackgroundColor(resources.getColor(R.color.grigio_chiaro))
+                        binding.parentRecensioni.setBackgroundColor(resources.getColor(R.color.grigio_chiaro))
 
                     }
                     else -> Log.i("msg", "stato: $newState")
@@ -338,62 +340,67 @@ class MainPrenotazione : AppCompatActivity() {
             }
         }
 
-        DBMSboundary().getRecensioni(applicationContext, object : QueryReturnCallback<List<ModelRecensioni>>{
-            override fun onReturnValue(response: List<ModelRecensioni>, message: String) {
-                when(response.size){
-                    0 -> {}
-                    1 -> {
-                        binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
-                        binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
+        intent.getStringExtra("nome")?.let {nomeServizio: String ->
+            DBMSboundary().getRecensioniServizio(applicationContext, object : QueryReturnCallback<List<ModelRecensioni>>{
+                override fun onReturnValue(response: List<ModelRecensioni>, message: String) {
+                    when(response.size){
+                        0 -> {
+                            binding.includedRecensioni.rec1.visibility = View.GONE
+                            binding.includedRecensioni.rec2.visibility = View.GONE
+                            binding.includedRecensioni.rec3.visibility = View.GONE
+                        }
+                        1 -> {
+                            binding.includedRecensioni.rec1.visibility = View.VISIBLE
+                            binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
+                            binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
+                        }
 
-                        binding.includedRecensioni.titoloRecensione2.visibility = View.GONE
-                        binding.includedRecensioni.ratingBarRecensioniFatte2.visibility = View.GONE
+                        2 -> {
+                            binding.includedRecensioni.rec1.visibility = View.VISIBLE
+                            binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
+                            binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
 
-                        binding.includedRecensioni.titoloRecensione3.visibility = View.GONE
-                        binding.includedRecensioni.ratingBarRecensioniFatte3.visibility = View.GONE
+                            binding.includedRecensioni.rec2.visibility = View.VISIBLE
+                            binding.includedRecensioni.titoloRecensione2.text = response[1].titolo
+                            binding.includedRecensioni.ratingBarRecensioniFatte2.rating = response[1].valutazione
 
+
+
+                        }
+
+                        else -> {
+                            binding.includedRecensioni.rec1.visibility = View.VISIBLE
+                            binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
+                            binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
+
+                            binding.includedRecensioni.rec2.visibility = View.VISIBLE
+                            binding.includedRecensioni.titoloRecensione2.text = response[1].titolo
+                            binding.includedRecensioni.ratingBarRecensioniFatte2.rating = response[1].valutazione
+
+                            binding.includedRecensioni.rec3.visibility = View.VISIBLE
+                            binding.includedRecensioni.titoloRecensione3.text = response[2].titolo
+                            binding.includedRecensioni.ratingBarRecensioniFatte3.rating = response[2].valutazione
+                        }
                     }
 
-                    2 -> {
-                        binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
-                        binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
-
-                        binding.includedRecensioni.titoloRecensione2.text = response[1].titolo
-                        binding.includedRecensioni.ratingBarRecensioniFatte2.rating = response[1].valutazione
-
-                        binding.includedRecensioni.titoloRecensione3.visibility = View.GONE
-                        binding.includedRecensioni.ratingBarRecensioniFatte3.visibility = View.GONE
-
-                    }
-
-                    else -> {
-                        binding.includedRecensioni.titoloRecensione1.text = response[0].titolo
-                        binding.includedRecensioni.ratingBarRecensioniFatte1.rating = response[0].valutazione
-
-                        binding.includedRecensioni.titoloRecensione2.text = response[1].titolo
-                        binding.includedRecensioni.ratingBarRecensioniFatte2.rating = response[1].valutazione
-
-                        binding.includedRecensioni.titoloRecensione3.text = response[1].titolo
-                        binding.includedRecensioni.ratingBarRecensioniFatte3.rating = response[1].valutazione
+                    binding.includedRecensioni.parent2Recensioni.setOnClickListener {
+                        val i = Intent(applicationContext, MainActivitySchermateVuote::class.java)
+                        i.putExtra("layout", R.layout.frag_recensioni)
+                        i.putExtra("nomeServizio", nomeServizio)
+                        i.putExtra("response", response as Serializable)
+                        startActivity(i)
                     }
                 }
 
-                binding.includedRecensioni.parent2Recensioni.setOnClickListener {
-                    val i = Intent(applicationContext, MainActivitySchermateVuote::class.java)
-                    i.putExtra("layout", R.layout.frag_recensioni)
-                    i.putExtra("response", response as Serializable)
-                    startActivity(i)
+                override fun onQueryFailed(fail: String) {
+                    Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
                 }
-            }
 
-            override fun onQueryFailed(fail: String) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onQueryError(error: String) {
-                TODO("Not yet implemented")
-            }
-        }, null)
+                override fun onQueryError(error: String) {
+                    Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                }
+            }, nomeServizio)
+        }
 
     }
 

@@ -27,19 +27,44 @@ class FragRecensioni: Fragment(R.layout.frag_recensioni) {
         val serializableList = arguments?.getSerializable("response") as? List<*>
         val list = serializableList?.filterIsInstance<ModelRecensioni>()
 
-        if(!list.isNullOrEmpty()){
+        if(list != null){
+            binding.addRecensione.visibility = View.VISIBLE
             binding.titleRecensioni.text = resources.getString(R.string.title_recensioni)
             binding.recyclerviewRecensioni.visibility = View.VISIBLE
             binding.nessunaRecensioneAvviso.visibility = View.GONE
             binding.recyclerviewRecensioni.layoutManager = LinearLayoutManager(requireContext())
             binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), list)
 
+            binding.buttonRecensione.setOnClickListener {
+
+                //carico recensione
+                arguments?.let { it1 ->
+                    DBMSboundary().insertRecensione(requireContext(),
+                        binding.editRecensioneTitolo.text.toString(),
+                        binding.editRecensioneDesc.text.toString(),
+                        Utente.getInstance().getNome(),
+                        it1.getString("nomeServizio", ""),
+                        binding.ratingBarRec.rating,
+                        Utente.getInstance().getId()
+                    )
+                }
+
+                binding.editRecensioneTitolo.setText("")
+                binding.editRecensioneDesc.setText("")
+                binding.ratingBarRec.rating = 0F
+            }
+
         }else{
-            DBMSboundary().getRecensioni(requireContext(), object : QueryReturnCallback<List<ModelRecensioni>>{
+            //nascondo parti che non servono per vedere le proprie recensioni
+            binding.addRecensione.visibility = View.GONE
+
+
+            DBMSboundary().getRecensioniUtente(requireContext(), object : QueryReturnCallback<List<ModelRecensioni>>{
                 override fun onReturnValue(response: List<ModelRecensioni>, message: String) {
                     if(response.isEmpty()){
                         binding.recyclerviewRecensioni.visibility = View.GONE
                         binding.nessunaRecensioneAvviso.visibility = View.VISIBLE
+
                     }else{
                         binding.recyclerviewRecensioni.visibility = View.VISIBLE
                         binding.nessunaRecensioneAvviso.visibility = View.GONE
