@@ -24,7 +24,7 @@
                     <ImageView
                         style="@style/parent"
                         android:background="@drawable/ic_login_bk"
-                        android:contentDescription="login background" />
+                        android:contentDescription="@string/login_background" />
 
                 </LinearLayout>
 

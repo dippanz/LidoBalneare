@@ -1,182 +1,170 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-       >
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dati_metodi_di_pagamento"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:textSize="22sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/cartaNonPresente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            >
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:text="@string/_1_s_come_metodo_di_pagamento_non_presente"
+            android:layout_marginStart="10dp"/>
+
+        <LinearLayout
+            android:elevation="5dp"
+            android:background="@drawable/background_oval"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/linearCarta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
 
             <TextView
-                android:id="@+id/textPagamentoNome"
-                android:layout_width="wrap_content"
+                android:id="@+id/textNumeroCarta"
+                android:layout_width="180dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:text="@string/nome"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/edittextPagamentoNome"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <EditText
-                android:id="@+id/editTextPagamentoTel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:hint="@string/inserisci_telefono"
-                android:inputType="text"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.184"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPagamentoTel" />
+                android:layout_margin="5dp"
+                android:text="@string/numero_carta_n_1_s"
+                android:textColor="@color/black"/>
 
             <TextView
-                android:id="@+id/textPagamentoCognome"
-                android:layout_width="wrap_content"
+                android:id="@+id/textCvv"
+                android:layout_width="70dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="@string/cognome"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/edittextPagamentoCognome"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.108"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edittextPagamentoNome" />
-
-            <EditText
-                android:id="@+id/edittextPagamentoCognome"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:ems="10"
-                android:hint="@string/inserisci_cognome"
-                android:inputType="text"
-                app:layout_constraintBottom_toTopOf="@+id/textPagamentoMail"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.184"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPagamentoCognome" />
-
+                android:text="@string/cvv_n_1_s"
+                android:layout_margin="5dp"
+                android:textColor="@color/black"/>
 
             <TextView
-                android:id="@+id/textPagamentoMail"
-                android:layout_width="wrap_content"
+                android:id="@+id/textDataScadenza"
+                android:layout_width="95dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="@string/e_mail"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/edittextPagamentoMail"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.123"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edittextPagamentoCognome" />
+                android:text="@string/data_di_scadenza_n_1_s"
+                android:layout_margin="5dp"
+                android:textColor="@color/black"/>
 
-            <EditText
-                android:id="@+id/edittextPagamentoMail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:ems="10"
-                android:hint="@string/inserisci_e_mail"
-                android:inputType="text"
-                app:layout_constraintBottom_toTopOf="@+id/textPagamentoTel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.184"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPagamentoMail" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/ccNonPresente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            android:textSize="16sp"
+            android:text="@string/_1_s_come_metodo_di_pagamento_non_presente"
+            android:layout_marginStart="10dp"/>
+
+        <LinearLayout
+            android:elevation="5dp"
+            android:background="@drawable/background_oval"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/linearCC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
 
             <TextView
-                android:id="@+id/textPagamentoTel"
-                android:layout_width="wrap_content"
+                android:id="@+id/textNumConto"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:text="@string/telefono"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/editTextPagamentoTel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.131"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/edittextPagamentoMail" />
+                android:layout_margin="5dp"
+                android:text="@string/iban_n_1_s"
+                android:textColor="@color/black"/>
 
-            <EditText
-                android:id="@+id/edittextPagamentoNome"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textNomeTitolareCC"
+                android:layout_width="135dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:ems="10"
-                android:hint="@string/inserisci_nome"
-                android:inputType="text"
-                app:layout_constraintBottom_toTopOf="@+id/textPagamentoCognome"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.184"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textPagamentoNome" />
+                android:textSize="16sp"
+                android:text="@string/nome_titolare_n_1_s"
+                android:layout_margin="5dp"
+                android:textColor="@color/black"/>
 
 
-            <LinearLayout
-                android:id="@+id/linearLayout4"
-                android:layout_width="match_parent"
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/paypalNonPresente"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_margin="10dp"
+            android:textSize="16sp"
+            android:text="@string/_1_s_come_metodo_di_pagamento_non_presente"
+            android:layout_marginStart="10dp"/>
+
+        <LinearLayout
+            android:elevation="5dp"
+            android:background="@drawable/background_oval"
+            android:layout_marginBottom="2dp"
+            android:id="@+id/linearPaypal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp">
+
+            <TextView
+                android:id="@+id/textMailPaypal"
+                android:layout_width="220dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                app:layout_constraintBottom_toTopOf="@id/buttonInserisciDatiPagamenti"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayoutBonificoTendina">
+                android:textSize="16sp"
+                android:layout_margin="5dp"
+                android:text="@string/email_n_1_s"
+                android:textColor="@color/black"/>
 
-                <TextView
-                    android:id="@+id/textView6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:text="@string/salva_i_dati_per_le_prossime_prenotazioni"
-                    android:textSize="14sp" />
-
-                <CheckBox
-                    android:id="@+id/checkBox"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/buttonInserisciDatiPagamenti"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/textNomeTitolarePaypal"
+                android:layout_width="135dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:text="@string/prossimo_step"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.9"
-                app:layout_constraintStart_toStartOf="parent" />
+                android:textSize="16sp"
+                android:text="@string/nome_titolare_n_1_s"
+                android:layout_margin="5dp"
+                android:textColor="@color/black"/>
+
+
+        </LinearLayout>
+
+
+
+
 
             <RadioButton
                 android:id="@+id/radioButtonCartaTendina"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
                 android:text="@string/inserisci_dati_carta"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.04"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editTextPagamentoTel" />
+                android:layout_margin="10dp" />
 
             <LinearLayout
                 android:id="@+id/linearLayoutCartaTendina"
@@ -186,9 +174,7 @@
                 android:visibility="gone"
                 android:layout_marginStart="36dp"
                 android:layout_marginEnd="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/radioButtonCartaTendina">
+                >
 
 
                 <TextView
@@ -215,7 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="9sp"
+                    android:textSize="11sp"
                     android:textColor="@color/red"
                     android:text="" />
 
@@ -245,7 +231,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="9sp"
+                    android:textSize="11sp"
                     android:textColor="@color/red"
                     android:text="" />
 
@@ -274,7 +260,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="9sp"
+                    android:textSize="11sp"
                     android:textColor="@color/red"
                     android:text="" />
 
@@ -292,10 +278,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/inserisci_dati_paypal"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.04"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayoutCartaTendina" />
+                android:layout_margin="10dp"
+                />
 
             <LinearLayout
                 android:id="@+id/linearLayoutPayPalTendina"
@@ -335,7 +319,7 @@
                     android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/red"
-                    android:textSize="9sp" />
+                    android:textSize="11sp" />
 
 
             </LinearLayout>
@@ -347,10 +331,8 @@
                 android:text="@string/inserisci_dati_bonifico"
                 android:textStyle="bold"
                 android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.04"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/linearLayoutPayPalTendina" />
+                android:layout_margin="10dp"
+                />
 
             <LinearLayout
                 android:id="@+id/linearLayoutBonificoTendina"
@@ -390,22 +372,25 @@
                     android:layout_weight="1"
                     android:text=""
                     android:textColor="@color/red"
-                    android:textSize="9sp" />
+                    android:textSize="11sp" />
 
 
             </LinearLayout>
 
-
-
-
-
-
-
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
+    <Button
+        android:id="@+id/buttonInserisciDatiPagamenti"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_gravity="center"
+        android:text="@string/inserisci_dati"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.9"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 
 </LinearLayout>
+</ScrollView>

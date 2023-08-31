@@ -2,11 +2,9 @@ package com.example.lidobalneare
 
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.JsonObject
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,109 +12,9 @@ import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
 import java.util.Locale
-import java.util.concurrent.CountDownLatch
 
 class DBMSboundary {
 
-    fun getDataHomePage(context: Context, callback: QueryReturnCallback<List<ViewModelHomePage>>) {
-        //serve aggiungere una tabella dove memorizzare le immagini dei servizi
-        val query = "SELECT * FROM webmobile.home"
-        var c = 0
-
-        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful) {
-
-                    val queryset = response.body()?.getAsJsonArray("queryset")
-
-                    if (queryset != null && queryset.size() > 0) {
-                        val list = mutableListOf<ViewModelHomePage>()
-
-                        // Dichiarazione del contatore latch
-                        val latch = CountDownLatch(queryset.size())
-
-                        for (item in queryset) {
-                            val itemJson = item.asJsonObject
-                            Log.i("msg", "dato: $itemJson")
-
-                            //val imageUrl = "http://10.0.2.2:8000/webmobile/server/serverdj/" + itemJson.get("Immagine").asString
-                            val imageUrl = itemJson.get("Immagine").asString
-
-
-                            Log.i("msg", imageUrl)
-
-                            //richiedo immagine da server
-                            ClientNetwork.retrofit.getImage(imageUrl).enqueue(object : Callback<ResponseBody>{
-                                override fun onResponse(
-                                    call: Call<ResponseBody>,
-                                    response: Response<ResponseBody>
-                                ) {
-                                    Log.i("msg", "prima entro")
-                                    val title = itemJson.get("Titolo").asString
-                                    val desc = itemJson.get("Descrizione").asString
-
-                                    if(response.isSuccessful){
-                                        c++
-                                        Log.i("msg", "entro $c volte")
-
-                                        val imageByteArray = response.body()?.bytes()
-                                        val imageDrawable = BitmapDrawable.createFromStream(imageByteArray?.inputStream(), null)
-                                        //list.add(ViewModelHomePage(imageDrawable, title, desc))
-
-                                    }else{
-                                        Log.i("msg", response.toString())
-                                        callback.onQueryError(context.getString(R.string.query_format_error_image))
-                                    }
-
-                                    // Contatore decrementato
-                                    latch.countDown()
-                                }
-
-                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                    callback.onQueryError(context.getString(R.string.query_error_image))
-                                    Log.e("msg", "Errore durante la chiamata API: ${t.message}")
-                                    t.printStackTrace()
-
-                                    // Contatore decrementato
-                                    latch.countDown()
-                                }
-
-                            })
-                        }
-
-
-                        // Attendi il completamento di tutte le chiamate
-                        Log.i("msg", "${latch.count}")
-                        latch.await()
-
-                        // Verifica se hai completato il caricamento di tutti i dati
-                        if (list.size == queryset.size()) {
-                            callback.onReturnValue(list, context.getString(R.string.query_successful))
-                        }else{
-                            callback.onQueryError(context.getString(R.string.query_format_errorDatiMancanti))
-                        }
-
-                    } else {
-                        callback.onQueryFailed(context.getString(R.string.query_failed))
-                    }
-                } else {
-                    callback.onQueryError(context.getString(R.string.query_format_error))
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                callback.onQueryError(context.getString(R.string.query_error))
-                Log.e("msg", "Errore durante la chiamata API: ${t.message}")
-                t.printStackTrace()
-            }
-        })
-
-
-
-
-
-
-    }
 /**
  * query per prelevare prezzo di un servizio
  * @param nome identifica il nome del servizio che fa da chiave primaria per ottnere il prezzo
@@ -595,6 +493,164 @@ class DBMSboundary {
         })
 
     }
+    
+    fun getDatiPagCarta(context: Context, callback: QueryReturnCallback<CartaPrepagata>, id: Int){
+
+        val query = "select * from webmobile.carta_prepagata where utente_id = $id"
+
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    if (result.size() > 0){
+                        callback.onReturnValue(
+                            CartaPrepagata(
+                                result[0].asJsonObject.get("numeroCarta").asString,
+                                result[0].asJsonObject.get("cvv").asString,
+                                LocalDate.parse(result[0].asJsonObject.get("data_scadenza").asString)
+                        ), context.getString(R.string.query_successful))
+                    }else{
+                        callback.onQueryError("nessun dato")
+                    }
+                } else {
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+        })
+    }
+
+    fun getDatiPagCC(context: Context, callback: QueryReturnCallback<ContoCorrente>, id: Int){
+
+        val query = "select * from webmobile.cc where utente_id = $id"
+
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    if (result.size() > 0){
+                        callback.onReturnValue(
+                            ContoCorrente(
+                                result[0].asJsonObject.get("numeroConto").asString,
+                                result[0].asJsonObject.get("iban").asString,
+                                result[0].asJsonObject.get("nomeTitolare").asString
+                            ), context.getString(R.string.query_successful))
+                    }else{
+                        callback.onQueryError("nessun dato")
+                    }
+                } else {
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+        })
+    }
+
+    fun getDatiPagPaypal(context: Context, callback: QueryReturnCallback<PayPal>, id: Int){
+
+        val query = "select * from webmobile.paypal where utente_id = $id"
+
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful) {
+                    val result = response.body()!!.getAsJsonArray("queryset")
+
+                    if (result.size() > 0){
+                        callback.onReturnValue(
+                            PayPal(
+                                result[0].asJsonObject.get("numeroConto").asString,
+                                result[0].asJsonObject.get("email").asString,
+                                result[0].asJsonObject.get("nomeTitolare").asString,
+                                result[0].asJsonObject.get("telefono").asString
+                            ), context.getString(R.string.query_successful))
+                    }else{
+                        callback.onQueryError("nessun dato")
+                    }
+                } else {
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+        })
+    }
+
+    fun insertDatiCarta(context: Context, numeroCarta: String, cvv: String, data: LocalDate){
+
+        val insertQuery = "INSERT INTO carta_prepagata (numeroCarta, cvv, data_scadenza, utente_id)\n " +
+                "VALUES ('$numeroCarta', '$cvv', '$data', ${Utente.getInstance().getId()})"
+
+        ClientNetwork.retrofit.insert(insertQuery).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    Toast.makeText(context, context.getString(R.string.query_successful), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                Toast.makeText(context, context.getString(R.string.query_failed), Toast.LENGTH_SHORT).show()
+            }
+        })
+
+    }
+
+    fun insertPaypal(context: Context, email: String){
+        val query = "INSERT INTO paypal (numeroConto, email, nomeTitolare, telefono, utente_id)\n " +
+                "VALUES ('${generateRandomAlphanumericString()}', '$email', '${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}', '${Utente.getInstance().getTelefono()}', ${Utente.getInstance().getId()})"
+
+        ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    Toast.makeText(context, context.getString(R.string.query_successful), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+    private fun generateRandomAlphanumericString(length: Int = 10): String {
+        val charset = ('A'..'Z') + ('a'..'z') + ('0'..'9')
+        return (1..length)
+            .map { charset.random() }
+            .joinToString("")
+    }
+
+    fun insertCC(context: Context, iban: String){
+        val query = "INSERT INTO cc (numeroConto, iban, nomeTitolare, utente_id)\n " +
+                "VALUES ('${generateRandomAlphanumericString()}', '$iban', '${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}', ${Utente.getInstance().getId()});"
+
+        ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    Toast.makeText(context, context.getString(R.string.query_successful), Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+    }
+
+
+
+
 
 
 

@@ -33,7 +33,15 @@ class FragImpostazioni: Fragment(R.layout.frag_impostazioni) {
 
         binding.textModificaProfilo.setOnClickListener {
             val t = parentFragmentManager.beginTransaction()
+            t.addToBackStack("modProfilo")
             t.replace(R.id.containerAreaPersonale, FragModProfilo())
+            t.commit()
+        }
+
+        binding.textMetodoPagamento.setOnClickListener {
+            val t = parentFragmentManager.beginTransaction()
+            t.addToBackStack("metodiPagamento")
+            t.replace(R.id.containerAreaPersonale, FragInserisciDatiPagamento())
             t.commit()
         }
     }

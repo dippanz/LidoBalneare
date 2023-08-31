@@ -4,21 +4,100 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.lidobalneare.databinding.FragInserisciDatiPagamentoBinding
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class
 FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
 
+    private lateinit var binding: FragInserisciDatiPagamentoBinding
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragInserisciDatiPagamentoBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //todo prendo dati e li inserisco nel db
+        DBMSboundary().getDatiPagCarta(requireContext(), object : QueryReturnCallback<CartaPrepagata>{
+            override fun onReturnValue(response: CartaPrepagata, message: String) {
+                binding.textNumeroCarta.text = resources.getString(R.string.numero_carta_n_1_s, response.getNumeroCarta())
+                binding.textCvv.text = resources.getString(R.string.cvv_n_1_s, response.getCvv())
+                binding.textDataScadenza.text = resources.getString(R.string.data_di_scadenza_n_1_s, response.getDataScadeza().toString())
+                binding.linearCarta.visibility = View.VISIBLE
+                binding.cartaNonPresente.visibility = View.GONE
+                binding.radioButtonCartaTendina.isClickable = false
+            }
+
+            override fun onQueryFailed(fail: String) {
+                Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onQueryError(error: String) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                binding.linearCarta.visibility = View.GONE
+                binding.cartaNonPresente.visibility = View.VISIBLE
+                binding.cartaNonPresente.text = resources.getString(R.string._1_s_come_metodo_di_pagamento_non_presente, "Carta prepagata")
+            }
+        }, Utente.getInstance().getId())
+
+        DBMSboundary().getDatiPagPaypal(requireContext(), object : QueryReturnCallback<PayPal>{
+            override fun onReturnValue(response: PayPal, message: String) {
+                binding.textMailPaypal.text = resources.getString(R.string.email_n_1_s, response.getEmail())
+                binding.textNomeTitolarePaypal.text = resources.getString(R.string.nome_titolare_n_1_s, response.getNomeTitolare())
+                binding.linearPaypal.visibility = View.VISIBLE
+                binding.paypalNonPresente.visibility = View.GONE
+                binding.radioButtonPayPalTendina.isClickable = false
+            }
+
+            override fun onQueryFailed(fail: String) {
+                Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onQueryError(error: String) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                binding.linearPaypal.visibility = View.GONE
+                binding.paypalNonPresente.visibility = View.VISIBLE
+                binding.paypalNonPresente.text = resources.getString(R.string._1_s_come_metodo_di_pagamento_non_presente, "PayPal")
+            }
+        }, Utente.getInstance().getId())
+
+        DBMSboundary().getDatiPagCC(requireContext(), object : QueryReturnCallback<ContoCorrente>{
+            override fun onReturnValue(response: ContoCorrente, message: String) {
+                binding.textNumConto.text = resources.getString(R.string.iban_n_1_s, response.getIban())
+                binding.textNomeTitolareCC.text = resources.getString(R.string.nome_titolare_n_1_s, response.getNomeTitolare())
+                binding.linearCC.visibility = View.VISIBLE
+                binding.ccNonPresente.visibility = View.GONE
+                binding.radioButtonBonificoTendina.isClickable = false
+            }
+
+            override fun onQueryFailed(fail: String) {
+                Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onQueryError(error: String) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                binding.linearCC.visibility = View.GONE
+                binding.ccNonPresente.visibility = View.VISIBLE
+                binding.ccNonPresente.text = resources.getString(R.string._1_s_come_metodo_di_pagamento_non_presente, "Bonfico")
+            }
+        }, Utente.getInstance().getId())
+
+
 
         //setto gli editText specifici tipo di input solo numeri e controllo che vengano inseriti i dati corretti
         val editTextNumero = view.findViewById<EditText>(R.id.editTextNumero)
@@ -49,42 +128,6 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
                     textViewErroreCarta.setText(R.string.Inserisci_numero_valido)
                 }else{
                     textViewErroreCarta.text = ""
-                }
-            }
-        })
-
-        val editTextPagamentoTel = view.findViewById<EditText>(R.id.editTextPagamentoTel)
-        editTextPagamentoTel.setRawInputType(InputType.TYPE_CLASS_NUMBER)
-        editTextPagamentoTel.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // Non utilizzato, lasciato vuoto
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val maxLength = 10 // Limite di caratteri consentito
-                val input = s.toString()
-
-                if (input.length > maxLength) {
-                    // Rimuovi i caratteri in eccesso
-                    val trimmedInput = input.substring(0, maxLength)
-                    editTextPagamentoTel.setText(trimmedInput)
-                    editTextPagamentoTel.setSelection(trimmedInput.length) // Posiziona il cursore alla fine del testo
-
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                val input = s.toString()
-
-                //controllo se i numeri inseriti sono 10
-                if (input.length < 10) {
-                    // Il testo inserito è composto da 10 cifre numeriche
-                    // Puoi eseguire qui le azioni necessarie
-                    // Esempio: mostra un messaggio di validazione
-                    //todo fare qualcosa
-
-                }else{
-
                 }
             }
         })
@@ -133,11 +176,10 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
 
                 if (input.length == 2 || input.length == 5) {
                     val day = input.substring(0, 2).toIntOrNull()
-                    var month: Int?
-                    try {
-                        month = input.substring(3, 5).toIntOrNull()
+                    val month: Int? = try {
+                        input.substring(3, 5).toIntOrNull()
                     }catch (e: StringIndexOutOfBoundsException){
-                        month = null
+                        null
                     }
 
 
@@ -170,19 +212,18 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
                 }
                 else if (input.length > 8) {
                     // Rimuovi i caratteri in eccesso
-                    val trimmedInput = input.substring(0, 8)
+                    val trimmedInput = input.substring(0, 7)
                     editTextScadenza.setText(trimmedInput)
                     editTextScadenza.setSelection(trimmedInput.length) // Posiziona il cursore alla fine del testo
                 }
-
-
             }
 
             override fun afterTextChanged(s: Editable?) {
                 val input = s.toString()
 
                 val textViewErroreData = view.findViewById<TextView>(R.id.textViewErroreData)
-                if (input.length < 8) {
+                val pattern = """\d{2}-\d{2}-\d{2}""".toRegex()
+                if (input.length < 8 || !pattern.matches(input) ) {
                     textViewErroreData.setText(R.string.Inserisci_data_valida)
                 }else{
                     textViewErroreData.text = ""
@@ -190,7 +231,49 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
             }
         })
 
+        val editTextMailPayPal = view.findViewById<EditText>(R.id.editTextMailPayPal)
+        editTextMailPayPal.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val emailPattern = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\$".toRegex()
+                val textViewErroreEmail = view.findViewById<TextView>(R.id.textViewErroreMailPayPal)
+                if(!emailPattern.matches(p0.toString())){
+                    textViewErroreEmail.setText(R.string.formato_email_errato)
+                }else{
+                    textViewErroreEmail.text = ""
+                }
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
+
+        val editTextNumConto = view.findViewById<EditText>(R.id.editTextNumConto)
+        editTextNumConto.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                val ibanPattern = "^[A-Z]{2}\\d{2}[A-Za-z0-9]{1,30}\$".toRegex()
+                val textViewErroreIban = view.findViewById<TextView>(R.id.textViewErroreMailPayPal)
+                if(!ibanPattern.matches(p0.toString())){
+                    textViewErroreIban.setText(R.string.formato_iabn_errato)
+                }else{
+                    textViewErroreIban.text = ""
+                }
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+
+            }
+        })
 
 
 
@@ -241,8 +324,35 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
         }
 
         view.findViewById<Button>(R.id.buttonInserisciDatiPagamenti).setOnClickListener {
-            Utente.getInstance().setLoggedIn()
-            requireActivity().onBackPressed()
+            if(binding.radioButtonCartaTendina.isChecked &&
+                binding.textViewErroreCvv.text == "" &&
+                binding.textViewErroreCarta.text == "" &&
+                binding.textViewErroreData.text == "") {
+
+                val formatter = DateTimeFormatter.ofPattern("dd-MM-yy")
+                DBMSboundary().insertDatiCarta(requireContext(),
+                    binding.editTextNumero.text.toString(),
+                    binding.editTextCvv.text.toString(),
+                    LocalDate.parse(binding.editTextScadenza.text.toString(), formatter)
+
+                )
+
+            }
+
+            if(binding.radioButtonBonificoTendina.isChecked &&
+                binding.textViewErroreNumConto.text == "") {
+
+                DBMSboundary().insertCC(requireContext(), binding.editTextNumConto.text.toString())
+
+            }
+
+            if(binding.radioButtonPayPalTendina.isChecked &&
+                binding.textViewErroreMailPayPal.text == "") {
+
+
+                DBMSboundary().insertPaypal(requireContext(), binding.editTextMailPayPal.text.toString())
+
+            }
         }
     }
 

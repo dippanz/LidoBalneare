@@ -7,5 +7,13 @@ class ContoCorrente(private val numeroConto: String, private val iban: String, p
     //setto saldo iniziale di 3000€
     private var saldo: Money = Money.newBuilder().setCurrencyCode("EUR").setUnits(3000).build()
 
+    fun getIban(): String{
+        return iban
+    }
+
+    fun getNomeTitolare(): String{
+        return nomeTitolare
+    }
+
 
 }

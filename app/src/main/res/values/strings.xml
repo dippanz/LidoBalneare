@@ -31,6 +31,8 @@
     <string name="inserisci_cognome">Inserisci cognome</string>
     <string name="e_mail">Indirizzo e-mail</string>
     <string name="inserisci_e_mail">Inserisci e-mail</string>
+    <string name="formato_email_errato">Formato email errato</string>
+    <string name="formato_iabn_errato">Formato IBAN errato</string>
     <string name="telefono">Telefono cellulare</string>
     <string name="salva_i_dati_per_le_prossime_prenotazioni">Salva i dati per le prossime prenotazioni</string>
     <string name="modalita_di_pagamento">MODALITA\' DI PAGAMENTO</string>
@@ -153,4 +155,16 @@
     <string name="codice_prenotazione_1_s">Codice prenotazione: %1$s</string>
     <string name="n_persone_1_s">N. Persone: %1$s</string>
     <string name="data_1_s">Data: %1$s</string>
+    <string name="inserisci_dati">Inserisci dati</string>
+    <string name="dati_metodi_di_pagamento">Dati metodi di pagamento</string>
+    <string name="nome_titolare_n_1_s">Nome titolare:\n%1$s</string>
+    <string name="email_n_1_s">Email:\n%1$s</string>
+    <string name="iban_n_1_s">IBAN:\n%1$s</string>
+    <string name="data_di_scadenza_n_1_s">Data di scadenza:\n%1$s</string>
+    <string name="cvv_n_1_s">Cvv:\n %1$s</string>
+    <string name="numero_carta_n_1_s">Numero carta:\n%1$s</string>
+    <string name="_1_s_come_metodo_di_pagamento_non_presente">%1$s come metodo di pagamento non presente</string>
+    <string name="attiva">ATTIVA</string>
+    <string name="qrcode">qrcode</string>
+    <string name="login_background">login background</string>
 </resources>

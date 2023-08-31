@@ -8,6 +8,7 @@
     <color name="day_selected">#BF0000FF</color>
 
     <color name="celeste">#CC2182FF</color>
+    <color name="celeste_chiaro">#CC549DFB</color>
     <color name="grigio_chiaro">#80808080</color>
     <color name="grigio">#676767</color>
     <color name="red">#FF0000</color>
@@ -25,6 +26,10 @@
     <color name="whiteCardColor">#fff</color>
 
     <color name="trasparente">#00000000</color>
+
+    <color name="green">#4CAF50</color>
+
+
 
 
 </resources>

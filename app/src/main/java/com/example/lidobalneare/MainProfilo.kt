@@ -32,6 +32,15 @@ class MainProfilo : AppCompatActivity() {
                     finish()
                     true
                 }
+
+                R.id.buttonPrenotazioni -> {
+                    if(Utente.getInstance().isLoggedIn()){
+                        val i = Intent(this, MainActivity2::class.java)
+                        finish()
+                        startActivity(i)
+                    }
+                    true
+                }
                 else -> false
             }
 

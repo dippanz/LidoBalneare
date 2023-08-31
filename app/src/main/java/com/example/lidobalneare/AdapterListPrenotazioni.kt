@@ -3,6 +3,7 @@ package com.example.lidobalneare
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lidobalneare.databinding.CardViewListPrenotazioniBinding
@@ -10,6 +11,10 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.WriterException
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.qrcode.QRCodeWriter
+import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneId
+import java.util.Locale
 
 class AdapterListPrenotazioni(val context: Context, val mList: List<ModelPrenotazione>) : RecyclerView.Adapter<AdapterListPrenotazioni.ViewHolder>() {
 
@@ -44,6 +49,17 @@ class AdapterListPrenotazioni(val context: Context, val mList: List<ModelPrenota
             holder.qr.layoutParams.height
         ))
 
+        val dateFormat = SimpleDateFormat("EEE dd MMM", Locale.ITALIAN)
+
+            val date = dateFormat.parse(modelPrenotazione.data)
+            val localDate =
+                date?.toInstant()?.atZone(ZoneId.systemDefault())?.toLocalDate()?.withYear( LocalDate.now().year)
+
+            if(localDate != null && localDate.isAfter(LocalDate.now())){
+                holder.binding.attivo.visibility = View.VISIBLE
+            }else{
+                holder.binding.attivo.visibility = View.GONE
+            }
 
     }
 

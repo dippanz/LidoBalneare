@@ -7,18 +7,24 @@
     android:orientation="vertical"
     tools:context=".MainProfilo">
 
+
+
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/celeste"
+            android:background="@color/celeste_chiaro"
             android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/textView15"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="10dp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:text="@string/profilo"
@@ -47,6 +53,12 @@
                 android:text="Name" />
 
         </LinearLayout>
+
+        <ImageView
+            style="@style/parent"
+            android:background="@drawable/ic_login_bk"
+            android:layout_marginTop="100dp"
+            android:contentDescription="@string/login_background" />
 
 
 
