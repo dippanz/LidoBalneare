@@ -40,7 +40,7 @@ android {
 }
 
 dependencies {
-
+    
     implementation("androidx.core:core-ktx:1.10.1")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.9.0")
@@ -64,5 +64,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     implementation("com.google.zxing:core:3.3.3")
+
+
 
 }

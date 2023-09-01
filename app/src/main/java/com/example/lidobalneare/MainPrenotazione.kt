@@ -1,5 +1,9 @@
 package com.example.lidobalneare
 
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -17,6 +21,7 @@ import java.math.BigDecimal
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.Month
+import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
@@ -303,10 +308,6 @@ class MainPrenotazione : AppCompatActivity() {
             val (startDate, endDate) = parseDateRange(binding.textDate.text.toString())
             val numPerson = binding.textNumPersone.text.toString().split(" ")[0].toInt()
 
-
-            
-
-
             if(binding.fragmentContainerResoconto.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).isChecked){
                 //se paga in anticipo allora mostro fragModPagamento
                 val i = Intent(this, MainActivitySchermateVuote::class.java)
@@ -337,6 +338,42 @@ class MainPrenotazione : AppCompatActivity() {
                 i.putExtra("valueText", "Prenotazione avvenuta con successo!")
                 finish()
                 startActivity(i)
+            }
+
+            if(LocalDate.now().isBefore(startDate.minusDays(1))) {
+
+                //creo notifica per ricordare la prenotazione un giorno prima
+
+                // Creare un ID per il canale di notifica
+                val channelId = "canale_prenotazioni"
+
+                // Creare un oggetto NotificationChannel
+                val channel = NotificationChannel(
+                    channelId,
+                    "Ricorda prenotazione",
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
+
+                // Registrare il canale con il sistema
+                val notificationManager = getSystemService(NotificationManager::class.java)
+                notificationManager.createNotificationChannel(channel)
+
+                // Creare un oggetto PendingIntent che avvia un broadcast receiver
+                val i = Intent(this, ReminderReceiver::class.java)
+                i.putExtra("title", "Ricorda la tua prenotazione!")
+                i.putExtra("desc", "Hai una prenotazione per le 09:00 di domani")
+                val pendingIntent =
+                    PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_IMMUTABLE)
+
+                // Creare un oggetto AlarmManager
+                val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+
+                val dateTime = startDate.atTime(9, 0)
+                // Impostare l'allarme per 24 ore prima dell'orario di prenotazione
+                val reminderTime =
+                    dateTime.toInstant(ZoneId.systemDefault().rules.getOffset(dateTime))
+                        .toEpochMilli() - 24 * 60 * 60 * 1000; // sottrarre 24 ore in millisecondi
+                alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent)
             }
         }
 

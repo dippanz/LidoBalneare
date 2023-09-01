@@ -167,4 +167,6 @@
     <string name="attiva">ATTIVA</string>
     <string name="qrcode">qrcode</string>
     <string name="login_background">login background</string>
+    <string name="nessuna_nuova_notifica_presente">Nessuna nuova notifica presente</string>
+    <string name="x">X</string>
 </resources>

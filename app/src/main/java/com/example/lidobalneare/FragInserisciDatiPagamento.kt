@@ -261,7 +261,7 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 val ibanPattern = "^[A-Z]{2}\\d{2}[A-Za-z0-9]{1,30}\$".toRegex()
-                val textViewErroreIban = view.findViewById<TextView>(R.id.textViewErroreMailPayPal)
+                val textViewErroreIban = view.findViewById<TextView>(R.id.textViewErroreNumConto)
                 if(!ibanPattern.matches(p0.toString())){
                     textViewErroreIban.setText(R.string.formato_iabn_errato)
                 }else{

@@ -648,12 +648,72 @@ class DBMSboundary {
         })
     }
 
+    fun insertNotifica(title: String, desc: String, id: Int) {
+
+        val query = "INSERT INTO notifiche (title, descrizione, utente_id) " +
+                "VALUES ('$title', '$desc', $id)"
+
+        ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+
+            }
+        })
+
+    }
+
+    fun removeNotifica(id: String) {
+        val query = "DELETE FROM notifiche WHERE id = $id"
+
+        ClientNetwork.retrofit.remove(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+
+            }
+        })
+    }
+
+    fun getNotifiche(context: Context, callback: QueryReturnCallback<List<ModelNotifica>>, id: Int) {
+
+        val query = "select * from notifiche where utente_id = $id"
+
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    val result = response.body()!!.getAsJsonArray("queryset")
+                    val listResult = ArrayList<ModelNotifica>()
+
+                    for(i in result) {
+                        listResult.add(
+                            ModelNotifica(
+                                i.asJsonObject.get("id").asString,
+                                i.asJsonObject.get("title").asString,
+                                i.asJsonObject.get("descrizione").asString
+                            )
+                        )
+                    }
+
+                    callback.onReturnValue(listResult, context.getString(R.string.query_successful))
 
 
 
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
 
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryFailed(context.getString(R.string.query_failed))
+            }
+        })
 
-
+    }
 
 
 }

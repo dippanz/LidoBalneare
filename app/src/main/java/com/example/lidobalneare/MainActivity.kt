@@ -118,6 +118,18 @@ class MainActivity : AppCompatActivity() {
                     }
                     true
                 }
+
+                R.id.notifiche ->{
+                    if(Utente.getInstance().isLoggedIn()){
+                        val i = Intent(this, MainNotifiche::class.java)
+                        startActivity(i)
+                    }else{
+                        val i = Intent(this, MainActivitySchermateVuote::class.java)
+                        i.putExtra("layout", R.layout.frag_loggin)
+                        startActivity(i)
+                    }
+                    true
+                }
                 else -> false
             }
 
