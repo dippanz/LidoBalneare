@@ -41,6 +41,17 @@ class MainProfilo : AppCompatActivity() {
                     }
                     true
                 }
+
+                R.id.notifiche -> {
+                    if(Utente.getInstance().isLoggedIn()){
+                        val i = Intent(this, MainNotifiche::class.java)
+                        finish()
+                        startActivity(i)
+                    }
+                    true
+                }
+
+
                 else -> false
             }
 

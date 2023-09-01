@@ -101,7 +101,7 @@ class MainActivity : AppCompatActivity() {
         //setto parte inferiore home
         binding.navigationBar.setOnItemSelectedListener {
             when (it.itemId) {
-                R.id.profilo -> {
+                R.id.buttonProfilo -> {
                     val i = Intent(this, MainProfilo::class.java)
                     startActivity(i)
                     true

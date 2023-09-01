@@ -15,7 +15,7 @@
         android:title="@string/notifiche" />
 
     <item
-        android:id="@+id/profilo"
+        android:id="@+id/buttonProfilo"
         android:icon="@drawable/ic_person"
         android:title="@string/profilo" />
 

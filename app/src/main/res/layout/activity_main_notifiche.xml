@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".MainActivity2">
+    tools:context=".MainNotifiche">
 
 
     <TextView
-        android:id="@+id/textView4"
+        android:id="@+id/titleActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="22sp"
@@ -17,29 +17,26 @@
         android:textStyle="bold"
         android:layout_gravity="center"
         android:padding="4dp"
-        android:text="@string/prenotazioni" />
+        android:text="@string/notifiche" />
+
+        <include
+            android:id="@+id/included_notifica"
+            layout="@layout/layout_no_notifica"
+            android:visibility="gone"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="1"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_prenotazioni"
+        android:id="@+id/recyclerview_notifiche"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        />
-
-    <TextView
-        android:id="@+id/avvisoNoPrenotazioni"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical|center"
-        android:textSize="18sp"
-        android:visibility="gone"
-        android:text="@string/non_sono_state_effettuate_prenotazioni"
         />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigationBarPrenotazioni"
+        android:id="@+id/navigationBar_notifiche"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
