@@ -91,15 +91,18 @@ class MainPrenotazione : AppCompatActivity() {
         }
 
         mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            val backgroundParent = binding.parentPrenotazione.solidColor
+
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.buttonPrenota2.visibility = View.VISIBLE
-                        binding.parentPrenotazione.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.parentPrenotazione.setBackgroundColor(backgroundParent)
                         binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.white))
                         binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.white))
                         binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.white))
-                        binding.parentRecensioni.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(resources.getColor(R.color.white))
 
                         if(manager.backStackEntryCount != 0){
                             manager.popBackStack()
@@ -114,7 +117,7 @@ class MainPrenotazione : AppCompatActivity() {
                         binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.trasparente))
                         binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.trasparente))
                         binding.parentPrenotazione.setBackgroundColor(resources.getColor(R.color.grigio_chiaro))
-                        binding.parentRecensioni.setBackgroundColor(resources.getColor(R.color.grigio_chiaro))
+                        binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(resources.getColor(R.color.trasparente))
 
                     }
                     else -> Log.i("msg", "stato: $newState")

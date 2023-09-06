@@ -2,9 +2,13 @@ package com.example.lidobalneare
 
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.widget.Toast
 import com.google.gson.JsonObject
+import okhttp3.ResponseBody
+import org.mindrot.jbcrypt.BCrypt
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,7 +52,7 @@ class DBMSboundary {
         })
     }
 
-    fun getCredenziali(context: Context, callback: QueryReturnCallback<Utente>,email: String, password: String){
+    fun getCredenziali(context: Context, callback: QueryReturnCallback<Utente>, email: String, password: String){
         val query = "SELECT * FROM webmobile.utente where email = \"$email\""
 
         ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
@@ -60,7 +64,7 @@ class DBMSboundary {
 
                     Log.i("msg", result.toString())
 
-                    if(result.size() > 0 && checkPassword(result.get(0).asJsonObject.get("pass").asString)){
+                    if(result.size() > 0 && verifyPassword(password, result.get(0).asJsonObject.get("pass").asString)){
                         Utente.getInstance().setId(result.get(0).asJsonObject.get("id").asInt)
                         Utente.getInstance().setNome(result.get(0).asJsonObject.get("nome").asString)
                         Utente.getInstance().setCognome(result.get(0).asJsonObject.get("cognome").asString)
@@ -78,8 +82,8 @@ class DBMSboundary {
             /**
              * @return ritorna true se la password corrisponde altrimenti false
              */
-            private fun checkPassword(pass: String?): Boolean {
-                return pass != null && pass == password
+            private fun verifyPassword(pass: String?, hashedPassword: String): Boolean {
+                return pass != null && BCrypt.checkpw(pass, hashedPassword)
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -437,11 +441,13 @@ class DBMSboundary {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if(response.isSuccessful){
                     Toast.makeText(context, context.getString(R.string.query_successful), Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(context, context.getString(R.string.query_error), Toast.LENGTH_SHORT).show()
                 }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                TODO("Not yet implemented")
+                Toast.makeText(context, context.getString(R.string.query_failed), Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -712,6 +718,113 @@ class DBMSboundary {
                 callback.onQueryFailed(context.getString(R.string.query_failed))
             }
         })
+
+    }
+
+    /**
+     * @param listNomeImage deve contenere il nome delle immagine del tipo: nome.png
+     */
+     fun getImagePromo(context: Context, callback: QueryReturnCallback<Bitmap>, listNomeImage: List<String>){
+
+        for(e in listNomeImage) {
+
+            val imageUrl = "http://10.0.2.2:8000/webmobile/media/images/promo/$e"
+
+            Log.i("msg", imageUrl)
+
+            // Esegui la richiesta per ottenere l'immagine
+            ClientNetwork.retrofit.getImage(imageUrl).enqueue(object : Callback<ResponseBody> {
+                override fun onResponse(
+                    call: Call<ResponseBody>,
+                    response: Response<ResponseBody>
+                ) {
+                    if (response.isSuccessful) {
+                        val imageBytes = response.body()?.bytes()
+
+                        if (imageBytes != null) {
+                            // Converti l'array di byte in un Bitmap
+                            val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                            callback.onReturnValue(bitmap, context.getString(R.string.query_successful))
+
+                        } else {
+                            Toast.makeText(context, "dati nulli, errore", Toast.LENGTH_SHORT).show()
+                        }
+
+                    } else {
+                       callback.onQueryError(context.getString(R.string.query_error))
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                    callback.onQueryError(context.getString(R.string.query_failed))
+                }
+            })
+        }
+
+
+    }
+
+    /**
+     * @param listNomiServizi contiene i nomi dei servizi dei quali prendere l'immagine
+     */
+    fun getImageHome(context: Context, callback: QueryReturnCallback<ViewModelHomePage>){
+
+
+            val query = "select * from webmobile.servizi"
+
+            ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+                override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                    if(response.isSuccessful){
+                        val result = response.body()!!.getAsJsonArray("queryset")
+
+                        for (e in result){
+                            val imageUrl = "http://10.0.2.2:8000/webmobile${e.asJsonObject.get("mediaPath").asString}"
+                            Log.i("msg", imageUrl)
+
+                            // Esegui la richiesta per ottenere l'immagine
+                            ClientNetwork.retrofit.getImage(imageUrl).enqueue(object : Callback<ResponseBody> {
+                                override fun onResponse(
+                                    call: Call<ResponseBody>,
+                                    response: Response<ResponseBody>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        val imageBytes = response.body()?.bytes()
+
+                                        if (imageBytes != null) {
+                                            callback.onReturnValue(
+                                                ViewModelHomePage(imageBytes,
+                                                    e.asJsonObject.get("nome").asString.uppercase(),
+                                                    e.asJsonObject.get("descrizione").asString),
+                                                context.getString(R.string.query_successful))
+
+                                        } else {
+                                            Toast.makeText(context, "dati nulli, errore", Toast.LENGTH_SHORT).show()
+                                        }
+
+                                    } else {
+                                        callback.onQueryError(context.getString(R.string.query_error))
+                                    }
+                                }
+
+                                override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                    callback.onQueryError(context.getString(R.string.query_failed))
+                                }
+                            })
+                        }
+
+                    }else{
+                        callback.onQueryError(context.getString(R.string.query_error))
+                    }
+                }
+
+                override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                    callback.onQueryError(context.getString(R.string.query_failed))
+                }
+            })
+
+
+
+
 
     }
 

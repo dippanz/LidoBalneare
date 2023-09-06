@@ -1,12 +1,20 @@
 package com.example.lidobalneare
 
+import android.graphics.Bitmap
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lidobalneare.databinding.ItemImageHomeBinding
 
-class ImageHomeAdapter(private val images: List<Int>) : RecyclerView.Adapter<ImageHomeAdapter.ViewHolder>() {
-    class ViewHolder(binding: ItemImageHomeBinding): RecyclerView.ViewHolder(binding.root){
+class ImageHomeAdapter(private val images: MutableList<Bitmap>) : RecyclerView.Adapter<ImageHomeAdapter.ViewHolder>() {
+
+
+    fun addImage(bitmap: Bitmap) {
+        images.add(bitmap)
+        notifyItemInserted(images.size - 1) // Notifica l'adapter dell'inserimento dell'immagine
+    }
+
+    inner class ViewHolder(binding: ItemImageHomeBinding): RecyclerView.ViewHolder(binding.root){
         val image = binding.imageViewItemHome
     }
 
@@ -20,6 +28,6 @@ class ImageHomeAdapter(private val images: List<Int>) : RecyclerView.Adapter<Ima
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = images[position]
-        holder.image.setImageResource(item)
+        holder.image.setImageBitmap(item)
     }
 }

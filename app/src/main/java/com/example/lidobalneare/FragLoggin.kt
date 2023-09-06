@@ -1,5 +1,6 @@
 package com.example.lidobalneare
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.lidobalneare.databinding.FragLogginBinding
+import org.mindrot.jbcrypt.BCrypt
 
 class FragLoggin: Fragment(R.layout.frag_loggin) {
 
@@ -102,35 +104,60 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
         }
 
         binding.includedRegister.registerButton.setOnClickListener {
-            val list = ArrayList<String>()
             val viewRegister = binding.includedRegister
-            if(DBMSboundary().isPasswordStrong(viewRegister.editTextPass.text.toString())
-                && viewRegister.editTextNome.text.isNotEmpty()
-                && viewRegister.editTextCognome.text.isNotEmpty()
-                && DBMSboundary().isPhoneNumberValid(viewRegister.editTextTel.text.toString())
-                && DBMSboundary().isEmailValid(viewRegister.editTextMail.text.toString())){
 
-                list.add(viewRegister.editTextNome.text.toString())
-                list.add(viewRegister.editTextCognome.text.toString())
-                list.add(viewRegister.editTextTel.text.toString())
-                list.add(viewRegister.editTextMail.text.toString())
-                //todo usare crittografia per la password
-                list.add(viewRegister.editTextPass.text.toString())
+            val password = viewRegister.editTextPass.text.toString()
+            val nome = viewRegister.editTextNome.text.toString()
+            val cognome = viewRegister.editTextCognome.text.toString()
+            val telefono = viewRegister.editTextTel.text.toString()
+            val email = viewRegister.editTextMail.text.toString()
 
-                DBMSboundary().insertUtente(requireContext(), object : QueryReturnCallback<Int>{
+            if (!DBMSboundary().isPasswordStrong(password)) {
+                Toast.makeText(context, "La password non è abbastanza sicura", Toast.LENGTH_SHORT).show()
+            } else if (nome.isEmpty()) {
+                Toast.makeText(context, "Il campo 'Nome' è vuoto", Toast.LENGTH_SHORT).show()
+            } else if (cognome.isEmpty()) {
+                Toast.makeText(context, "Il campo 'Cognome' è vuoto", Toast.LENGTH_SHORT).show()
+            } else if (!DBMSboundary().isPhoneNumberValid(telefono)) {
+                Toast.makeText(context, "Il numero di telefono non è valido", Toast.LENGTH_SHORT).show()
+            } else if (!DBMSboundary().isEmailValid(email)) {
+                Toast.makeText(context, "L'indirizzo email non è valido", Toast.LENGTH_SHORT).show()
+            } else {
+                // Nessun errore, esegui la query
+                val list = ArrayList<String>()
+                list.add(nome)
+                list.add(cognome)
+                list.add(telefono)
+                list.add(email)
+                list.add(hashPassword(password))
+
+                DBMSboundary().insertUtente(requireContext(), object : QueryReturnCallback<Int> {
                     override fun onReturnValue(response: Int, message: String) {
-                        if(response == 200){
-                            Toast.makeText(requireContext(), "inserito correttamente", Toast.LENGTH_SHORT).show()
+                        if (response == 200) {
+                            Toast.makeText(requireContext(), "Inserito correttamente", Toast.LENGTH_SHORT).show()
 
-                            //ritorno sempre alla home dopo l'accesso
-                            if(Utente.getInstance().isLoggedIn()){
-                                val intent = Intent(requireContext(), MainActivity::class.java)
-                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                                requireActivity().finish()
-                                startActivity(intent)
-                            }
-                        }else{
-                            Toast.makeText(requireContext(), "errore inserimento", Toast.LENGTH_SHORT).show()
+                            DBMSboundary().getCredenziali(requireContext(), object : QueryReturnCallback<Utente>{
+                                override fun onReturnValue(response: Utente, message: String) {
+                                    if(response.getId() != -1){
+                                        Utente.getInstance().setLoggedIn()
+                                        val intent = Intent(requireContext(), MainActivity::class.java)
+                                        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                                        requireActivity().finish()
+                                        startActivity(intent)
+                                    }
+                                }
+
+                                override fun onQueryFailed(fail: String) {
+                                    Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+                                }
+
+                                override fun onQueryError(error: String) {
+                                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                                }
+                            }, email, password)
+
+                        } else {
+                            Toast.makeText(requireContext(), "Errore inserimento", Toast.LENGTH_SHORT).show()
                         }
                     }
 
@@ -140,15 +167,17 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
 
                     override fun onQueryError(error: String) {
                         Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-
                     }
                 }, list)
-
-            }else{
-                Toast.makeText(context, "inserire tutti i dati correttamente", Toast.LENGTH_SHORT).show()
             }
         }
     }
+
+    private fun hashPassword(password: String): String {
+        val salt = BCrypt.gensalt(12) // Genera un salt con un costo di 12 (valore consigliato)
+        return BCrypt.hashpw(password, salt)
+    }
+
 
 
 

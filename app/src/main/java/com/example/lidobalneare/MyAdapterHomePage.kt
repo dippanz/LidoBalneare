@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lidobalneare.databinding.ServiziHomeCardViewBinding
 
 
-class MyAdapterHomePage(private val serviceList: List<ViewModelHomePage>): RecyclerView.Adapter<MyAdapterHomePage.ViewHolder>() {
+class MyAdapterHomePage(private val serviceList: MutableList<ViewModelHomePage>): RecyclerView.Adapter<MyAdapterHomePage.ViewHolder>() {
     class ViewHolder(binding: ServiziHomeCardViewBinding): RecyclerView.ViewHolder(binding.root){
         val image = binding.imageCardView
         val title = binding.titleCardView
@@ -28,7 +28,7 @@ class MyAdapterHomePage(private val serviceList: List<ViewModelHomePage>): Recyc
         val item = serviceList[position]
 
         //setto vari dati
-        holder.image.setImageResource(item.image)
+        holder.image.setImageBitmap(item.getImageBitmap())
         holder.title.text = item.title
         holder.desc.text = item.desc
 
@@ -44,5 +44,10 @@ class MyAdapterHomePage(private val serviceList: List<ViewModelHomePage>): Recyc
 
     fun setOnClickListener(l: OnClickListener){
         this.onClickListener = l
+    }
+
+    fun addViewModel(viewModelHomePage: ViewModelHomePage) {
+        serviceList.add(viewModelHomePage)
+        notifyItemInserted(serviceList.size - 1) // Notifica l'adapter dell'inserimento dell'immagine
     }
 }

@@ -334,25 +334,20 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
                     binding.editTextNumero.text.toString(),
                     binding.editTextCvv.text.toString(),
                     LocalDate.parse(binding.editTextScadenza.text.toString(), formatter)
-
                 )
-
             }
 
             if(binding.radioButtonBonificoTendina.isChecked &&
                 binding.textViewErroreNumConto.text == "") {
-
                 DBMSboundary().insertCC(requireContext(), binding.editTextNumConto.text.toString())
-
             }
 
             if(binding.radioButtonPayPalTendina.isChecked &&
                 binding.textViewErroreMailPayPal.text == "") {
-
-
                 DBMSboundary().insertPaypal(requireContext(), binding.editTextMailPayPal.text.toString())
-
             }
+
+            parentFragmentManager.popBackStack()
         }
     }
 

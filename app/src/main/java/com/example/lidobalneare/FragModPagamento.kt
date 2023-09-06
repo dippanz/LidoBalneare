@@ -1,7 +1,6 @@
 package com.example.lidobalneare
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,22 +81,19 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
                             DBMSboundary().insertPrenotazione(requireContext(), true, startDate, endDate,
                                 nomeServizio, Utente.getInstance().getId(), numPerson)
 
-                            Log.i("msg", "arrivo qua")
-
                             //se il pagamento è stato effettuato con successo
                             val t = parentFragmentManager.beginTransaction()
                             t.replace(R.id.fragment_container_schermate_vuote, FragPagamentSucces())
                             t.commit()
 
                         } else {
-                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!", Toast.LENGTH_LONG).show()
-                            Toast.makeText(requireContext(), "Carta generata", Toast.LENGTH_SHORT).show()
-                            Utente.getInstance().generateCarta()
+                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!\nInserire metodo di pagamento", Toast.LENGTH_SHORT).show()
                         }
 
                     } catch (e: IllegalStateException) {
                         e.printStackTrace()
-                        Utente.getInstance().clearCarta().generateCarta()
+                        Toast.makeText(requireContext(), "Inserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+
                     }
                 }
                 3 -> {

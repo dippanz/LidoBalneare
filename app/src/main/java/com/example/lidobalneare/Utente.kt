@@ -1,5 +1,6 @@
 package com.example.lidobalneare
 
+import android.graphics.Bitmap
 import android.util.Log
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -29,6 +30,24 @@ class Utente private constructor(){
     private var paypal: PayPal? = null
 
     private var isLoggedIn: Boolean = false
+    private val imageHome: MutableList<Bitmap> = mutableListOf()
+    private val imageHomeCenter: MutableList<ViewModelHomePage> = mutableListOf()
+
+    fun haveImagePromo(): Boolean{
+        return imageHome.isNotEmpty()
+    }
+
+    fun getImagePromo(): MutableList<Bitmap>?{
+       return if(haveImagePromo()){
+           imageHome
+       }else {
+           null
+       }
+    }
+
+    fun addImagePromo(images: Bitmap){
+        imageHome.add(images)
+    }
 
     fun setLoggedIn() {
         isLoggedIn = true
@@ -189,6 +208,18 @@ class Utente private constructor(){
         val fiveYearsLater = today.plusYears(5)
         val randomDays = Random.nextLong(1, ChronoUnit.DAYS.between(today, fiveYearsLater))
         return today.plusDays(randomDays)
+    }
+
+    fun haveImageHome(): Boolean {
+        return imageHomeCenter.isNotEmpty()
+    }
+
+    fun getImageHome(): MutableList<ViewModelHomePage> {
+        return imageHomeCenter
+    }
+
+    fun addImageHome(viewModelHomePage: ViewModelHomePage){
+        imageHomeCenter.add(viewModelHomePage)
     }
 
 }

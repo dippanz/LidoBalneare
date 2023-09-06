@@ -109,23 +109,6 @@
     <string name="versione_app">Versione app</string>
 
 
-    <string name="title_barca">Barca</string>
-    <string name="title_giro_barca">Giro in barca</string>
-    <string name="title_divanetti">Divanetti e Privé</string>
-    <string name="title_lettini">Lettini e ombrelloni</string>
-    <string name="title_moto_acqua">Moto d\'acqua</string>
-    <string name="title_pedalo">Pedalò</string>
-    <string name="title_pingpong">Ping Pong</string>
-
-    <string name="desc_barca">Premi per prenotare una piccola imbarcazione con la quale fare un giro in mare con i tuoi amici!</string>
-    <string name="desc_giro_barca">Premi per prenotare un giro in barca nelle isole vicine!</string>
-    <string name="desc_divanetti">Premi per prenotare una zona privata con divanetti e un gazebo dove stare con i tuoi amici!</string>
-    <string name="desc_lettini">Premi per prenotare il tuo posto nel lido!</string>
-    <string name="desc_moto_acqua">Premi per prenotare una moto d\'acqua con la quale fare un giro mozzafiato!</string>
-    <string name="desc_pedalo">Premi per prenotare un pedalò</string>
-    <string name="desc_pingpong">Premi per prenotare il tuo tavolo da Ping Pong!</string>
-
-
     <string name="register">REGISTER</string>
     <string name="login_email_hint">Email</string>
     <string name="login_password_hint">Password</string>

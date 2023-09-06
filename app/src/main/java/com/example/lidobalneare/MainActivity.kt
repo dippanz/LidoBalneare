@@ -1,8 +1,12 @@
 package com.example.lidobalneare
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lidobalneare.databinding.ActivityMainBinding
 import java.io.Serializable
@@ -18,16 +22,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //setto parte centrale home
-        val adapter = MyAdapterHomePage(arrayListOf(
-            ViewModelHomePage(R.drawable.barca, applicationContext.getString(R.string.title_barca), applicationContext.getString(R.string.desc_barca)),
-            ViewModelHomePage(R.drawable.barcagiro, applicationContext.getString(R.string.title_giro_barca), applicationContext.getString(R.string.desc_giro_barca)),
-            ViewModelHomePage(R.drawable.lettini_ombrelloni, applicationContext.getString(R.string.title_lettini), applicationContext.getString(R.string.desc_lettini)),
-            ViewModelHomePage(R.drawable.divani_prive, applicationContext.getString(R.string.title_divanetti), applicationContext.getString(R.string.desc_divanetti)),
-            ViewModelHomePage(R.drawable.motodacqua, applicationContext.getString(R.string.title_moto_acqua), applicationContext.getString(R.string.desc_moto_acqua)),
-            ViewModelHomePage(R.drawable.pedalo, applicationContext.getString(R.string.title_pedalo), applicationContext.getString(R.string.desc_pedalo)),
-            ViewModelHomePage(R.drawable.pingpong, applicationContext.getString(R.string.title_pingpong), applicationContext.getString(R.string.desc_pingpong)),
-        )
-        )
+        val adapter: MyAdapterHomePage
+
+        if(Utente.getInstance().haveImageHome()){
+            adapter = MyAdapterHomePage(Utente.getInstance().getImageHome())
+        }else{
+            adapter = MyAdapterHomePage(mutableListOf())
+
+            DBMSboundary().getImageHome(applicationContext, object : QueryReturnCallback<ViewModelHomePage>{
+                override fun onReturnValue(response: ViewModelHomePage, message: String) {
+                    adapter.addViewModel(response)
+                    Utente.getInstance().addImageHome(response)
+                }
+
+                override fun onQueryFailed(fail: String) {
+                    Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onQueryError(error: String) {
+                    Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                }
+            })
+        }
+
+
+
 
         adapter.setOnClickListener(object : MyAdapterHomePage.OnClickListener {
             override fun onClick(position: Int, model: ViewModelHomePage) {
@@ -89,14 +108,47 @@ class MainActivity : AppCompatActivity() {
         })
 
         binding.recyclerview.adapter = adapter
-
         binding.recyclerview.layoutManager = LinearLayoutManager(this)
 
 
         //setto parte superiore home
-        binding.viewPager.adapter =
-            ImageHomeAdapter(listOf(R.drawable.prova_welcome, R.drawable.image_promo))
+
+        val imageWelcome =
+            ResourcesCompat.getDrawable(applicationContext.resources, R.drawable.prova_welcome, null)
+                ?.toBitmap() as Bitmap
+        val adapterViewPager: ImageHomeAdapter
+
+        if(!Utente.getInstance().haveImagePromo()){
+
+            adapterViewPager = ImageHomeAdapter(mutableListOf(imageWelcome))
+            Utente.getInstance().addImagePromo(imageWelcome)
+
+            DBMSboundary().getImagePromo(applicationContext, object : QueryReturnCallback<Bitmap>{
+                override fun onReturnValue(response: Bitmap, message: String) {
+                    adapterViewPager.addImage(response)
+                    Utente.getInstance().addImagePromo(response)
+                }
+
+                override fun onQueryFailed(fail: String) {
+                    Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onQueryError(error: String) {
+                    Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+                }
+            }, listOf("promo1.png", "promo2.png"))
+        }else{
+            adapterViewPager = ImageHomeAdapter(Utente.getInstance().getImagePromo() as MutableList<Bitmap>)
+        }
+
+
+
+
+
+        binding.viewPager.adapter = adapterViewPager
         binding.dotsIndicator.attachTo(binding.viewPager)
+
+
 
         //setto parte inferiore home
         binding.navigationBar.setOnItemSelectedListener {

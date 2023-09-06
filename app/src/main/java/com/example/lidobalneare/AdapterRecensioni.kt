@@ -8,7 +8,7 @@ import com.example.lidobalneare.databinding.CardViewRecensioniBinding
 
 
 
-class AdapterRecensioni(val context: Context, private val mList: List<ModelRecensioni>) : RecyclerView.Adapter<AdapterRecensioni.ViewHolder>() {
+class AdapterRecensioni(val context: Context, private val mList: MutableList<ModelRecensioni>) : RecyclerView.Adapter<AdapterRecensioni.ViewHolder>() {
 
     inner class ViewHolder(val binding: CardViewRecensioniBinding) : RecyclerView.ViewHolder(binding.root) {
         val title = binding.titoloRecensione
@@ -33,6 +33,11 @@ class AdapterRecensioni(val context: Context, private val mList: List<ModelRecen
         holder.desc.text = modelRecensioni.desc
         holder.nomeP.text = context.getString(R.string.pubblicata_da_1s, modelRecensioni.nomeP)
         holder.rateBar.rating = modelRecensioni.valutazione
+    }
+
+    fun addRecensione(modelRecensioni: ModelRecensioni) {
+        mList.add(modelRecensioni)
+        notifyItemInserted(mList.size - 1) // Notifica l'adapter dell'inserimento dell'immagine
     }
 
 

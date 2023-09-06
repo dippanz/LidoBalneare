@@ -30,23 +30,50 @@ class FragRecensioni: Fragment(R.layout.frag_recensioni) {
         if(list != null){
             binding.addRecensione.visibility = View.VISIBLE
             binding.titleRecensioni.text = resources.getString(R.string.title_recensioni)
-            binding.recyclerviewRecensioni.visibility = View.VISIBLE
-            binding.nessunaRecensioneAvviso.visibility = View.GONE
+            val adapter = AdapterRecensioni(requireContext(), list.toMutableList())
             binding.recyclerviewRecensioni.layoutManager = LinearLayoutManager(requireContext())
-            binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), list)
+            binding.recyclerviewRecensioni.adapter =  adapter
+            if(list.isEmpty()){
+                binding.recyclerviewRecensioni.visibility = View.GONE
+                binding.nessunaRecensioneAvviso.visibility = View.VISIBLE
+            }else{
+                binding.recyclerviewRecensioni.visibility = View.VISIBLE
+                binding.nessunaRecensioneAvviso.visibility = View.GONE
+            }
 
             binding.buttonRecensione.setOnClickListener {
 
-                //carico recensione
-                arguments?.let { it1 ->
-                    DBMSboundary().insertRecensione(requireContext(),
-                        binding.editRecensioneTitolo.text.toString(),
-                        binding.editRecensioneDesc.text.toString(),
-                        Utente.getInstance().getNome(),
-                        it1.getString("nomeServizio", ""),
-                        binding.ratingBarRec.rating,
-                        Utente.getInstance().getId()
-                    )
+                if(binding.editRecensioneTitolo.text.toString().isNotEmpty() &&
+                binding.editRecensioneDesc.text.toString().isNotEmpty() &&
+                    binding.ratingBarRec.rating > 0.1) {
+                    //carico recensione
+                    arguments?.let { it1 ->
+                        DBMSboundary().insertRecensione(
+                            requireContext(),
+                            binding.editRecensioneTitolo.text.toString(),
+                            binding.editRecensioneDesc.text.toString(),
+                            Utente.getInstance().getNome(),
+                            it1.getString("nomeServizio", ""),
+                            binding.ratingBarRec.rating,
+                            Utente.getInstance().getId()
+                        )
+
+                        adapter.addRecensione(
+                            ModelRecensioni(
+                                binding.editRecensioneTitolo.text.toString(),
+                                binding.editRecensioneDesc.text.toString(),
+                                Utente.getInstance().getNome(),
+                                binding.ratingBarRec.rating,
+                                it1.getString("nomeServizio", "")
+                            )
+                        )
+
+                        binding.recyclerviewRecensioni.visibility = View.VISIBLE
+                        binding.nessunaRecensioneAvviso.visibility = View.GONE
+
+                    }
+                }else{
+                    Toast.makeText(requireContext(), "Riempire tutti i campi per pubblicare una recensione", Toast.LENGTH_SHORT).show()
                 }
 
                 binding.editRecensioneTitolo.setText("")
@@ -55,7 +82,7 @@ class FragRecensioni: Fragment(R.layout.frag_recensioni) {
             }
 
         }else{
-            //nascondo parti che non servono per vedere le proprie recensioni
+            //nascondo parti che non servono per vedere "le tue recensioni"
             binding.addRecensione.visibility = View.GONE
 
 
@@ -69,7 +96,7 @@ class FragRecensioni: Fragment(R.layout.frag_recensioni) {
                         binding.recyclerviewRecensioni.visibility = View.VISIBLE
                         binding.nessunaRecensioneAvviso.visibility = View.GONE
                         binding.recyclerviewRecensioni.layoutManager = LinearLayoutManager(requireContext())
-                        binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), response)
+                        binding.recyclerviewRecensioni.adapter =  AdapterRecensioni(requireContext(), response.toMutableList())
                     }
                 }
 
