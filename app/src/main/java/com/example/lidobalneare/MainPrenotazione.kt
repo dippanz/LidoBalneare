@@ -112,7 +112,7 @@ class MainPrenotazione : AppCompatActivity() {
                         //disabilito visibilita e funzionamento del tasto
                         binding.buttonPrenota2.visibility = View.GONE
 
-                        //rendo il dietro scuro e non utilizzaile
+                        //rendo il dietro scuro
                         binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.trasparente))
                         binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.trasparente))
                         binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.trasparente))

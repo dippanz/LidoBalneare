@@ -65,10 +65,38 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
             when (radioButton) {
                 1 -> {
                     //paypal
+                    try {
+                        if (Utente.getInstance().getPaypal()?.effettuaPagamento(MyMoney(BigDecimal(importoTotale))) == true) {
+                            //inserisco prenotazione nel db
+                            val bundleQuery = requireArguments().getBundle("bundleQuery")
+                            val startDate = bundleQuery?.getSerializable("startDate") as LocalDate
+                            val endDate = bundleQuery.getSerializable("endDate") as LocalDate
+                            val numPerson = bundleQuery.getInt("numPerson")
+                            val nomeServizio = bundleQuery.getString("nomeServizio") as String
+
+                            DBMSboundary().insertPrenotazione(requireContext(), true, startDate, endDate,
+                                nomeServizio, Utente.getInstance().getId(), numPerson)
+
+                            //se il pagamento è stato effettuato con successo
+                            val t = parentFragmentManager.beginTransaction()
+                            t.replace(R.id.fragment_container_schermate_vuote, FragPagamentSucces(), "FragPagamentSucces")
+                            t.commit()
+
+                        } else {
+                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!\nInserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+                        }
+
+                    } catch (e: IllegalStateException) {
+                        e.printStackTrace()
+                        Toast.makeText(requireContext(), "Soldi non sufficienti, caricare altro conto PayPal", Toast.LENGTH_SHORT).show()
+                        Utente.getInstance().clearPaypal()
+
+                    }
 
                 }
 
                 2 -> {
+                    //carta
                     try {
                         if (Utente.getInstance().getCarta()?.effettuaPagamento(MyMoney(BigDecimal(importoTotale))) == true) {
                            //inserisco prenotazione nel db
@@ -83,7 +111,7 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
 
                             //se il pagamento è stato effettuato con successo
                             val t = parentFragmentManager.beginTransaction()
-                            t.replace(R.id.fragment_container_schermate_vuote, FragPagamentSucces())
+                            t.replace(R.id.fragment_container_schermate_vuote, FragPagamentSucces(), "FragPagamentSucces")
                             t.commit()
 
                         } else {
@@ -92,11 +120,40 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
 
                     } catch (e: IllegalStateException) {
                         e.printStackTrace()
-                        Toast.makeText(requireContext(), "Inserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Soldi non sufficienti, caricare altra carta", Toast.LENGTH_SHORT).show()
+                        Utente.getInstance().clearCarta()
 
                     }
                 }
                 3 -> {
+                    //conto corrente
+                    try {
+                        if (Utente.getInstance().getCc()?.effettuaPagamento(MyMoney(BigDecimal(importoTotale))) == true) {
+                            //inserisco prenotazione nel db
+                            val bundleQuery = requireArguments().getBundle("bundleQuery")
+                            val startDate = bundleQuery?.getSerializable("startDate") as LocalDate
+                            val endDate = bundleQuery.getSerializable("endDate") as LocalDate
+                            val numPerson = bundleQuery.getInt("numPerson")
+                            val nomeServizio = bundleQuery.getString("nomeServizio") as String
+
+                            DBMSboundary().insertPrenotazione(requireContext(), true, startDate, endDate,
+                                nomeServizio, Utente.getInstance().getId(), numPerson)
+
+                            //se il pagamento è stato effettuato con successo
+                            val t = parentFragmentManager.beginTransaction()
+                            t.replace(R.id.fragment_container_schermate_vuote, FragPagamentSucces(), "FragPagamentSucces")
+                            t.commit()
+
+                        } else {
+                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!\nInserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+                        }
+
+                    } catch (e: IllegalStateException) {
+                        e.printStackTrace()
+                        Toast.makeText(requireContext(), "Soldi non sufficienti, caricare altro conto corrente", Toast.LENGTH_SHORT).show()
+                        Utente.getInstance().clearCC()
+
+                    }
 
                 }
                 else -> {

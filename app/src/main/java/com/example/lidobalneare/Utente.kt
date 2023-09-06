@@ -175,6 +175,16 @@ class Utente private constructor(){
         return this
     }
 
+    fun clearPaypal(): Utente{
+        paypal = null
+        return this
+    }
+
+    fun clearCC(): Utente{
+        cc = null
+        return this
+    }
+
     fun generateCarta() {
         if(carta == null){
             val numeroCarta = generateNumeroCarta()

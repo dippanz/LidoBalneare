@@ -38,7 +38,7 @@ class CartaPrepagata(private val numeroCarta: String, private val cvv: String, p
     }
 
     /**
-     * effettua il pagamento todo registrandolo da qualche parte
+     * effettua il pagamento
      *  @param importo deve essere un valore positivo
      *
      *  @throws IllegalStateException se il saldo è insufficiente viene buttato un eccezzione da gestire
@@ -49,12 +49,13 @@ class CartaPrepagata(private val numeroCarta: String, private val cvv: String, p
             if(importo.getSigne() > 0){
                 val importNeg = importo.changeSigne().get()
                 saldo = saldo.sum(importNeg)
+                Log.i("msg", saldo.toString())
                 return true
             }else{
                 Log.i("msg", "problema con pagamento")
+
             }
 
-            // todo Aggiungi qui la logica per registrare il pagamento effettuato
         } else {
             throw IllegalStateException("Saldo insufficiente per effettuare il pagamento.")
         }

@@ -8,6 +8,7 @@ import com.example.lidobalneare.databinding.ActivityMainSchermateVuoteBinding
 class MainActivitySchermateVuote : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainSchermateVuoteBinding
+    private var backHome: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,16 +24,19 @@ class MainActivitySchermateVuote : AppCompatActivity() {
                 bundle.putString("valueText", intent.getStringExtra("valueText"))
                 frag.arguments = bundle
                 manager.replace(R.id.fragment_container_schermate_vuote, frag)
+                backHome = true
             }
 
             R.layout.frag_loggin -> {
                 manager.replace(R.id.fragment_container_schermate_vuote, FragLoggin())
+                backHome = true
             }
 
             R.layout.frag_mod_pagamento -> {
                 val frag = FragModPagamento()
                 frag.arguments = intent.getBundleExtra("fragResData")
                 manager.replace(R.id.fragment_container_schermate_vuote, frag)
+                backHome = false
             }
 
             R.layout.frag_recensioni -> {
@@ -42,18 +46,20 @@ class MainActivitySchermateVuote : AppCompatActivity() {
                 bundle.putString("nomeServizio", intent.getStringExtra("nomeServizio"))
                 frag.arguments = bundle
                 manager.replace(R.id.fragment_container_schermate_vuote, frag)
+                backHome = false
             }
         }
         manager.commit()
-
-
     }
 
     @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
-        val intent = Intent(this, MainActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        if(backHome ||
+            supportFragmentManager.findFragmentById(binding.fragmentContainerSchermateVuote.id) == supportFragmentManager.findFragmentByTag("FragPagamentSucces")){
+            val intent = Intent(this, MainActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        }
         finish()
     }
 }
