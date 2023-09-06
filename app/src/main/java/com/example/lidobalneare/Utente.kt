@@ -141,7 +141,7 @@ class Utente private constructor(){
      *
      */
     fun setCarta(numeroCarta: String, cvv: String,dataScadenza: LocalDate){
-        val numeroCartaRegex = Regex("\\d{10}")
+        val numeroCartaRegex = Regex("\\d{16}")
         val cvvRegex = Regex("\\d{3}")
 
         // Se le condizioni sono soddisfatte, crea e assegna la carta

@@ -19,9 +19,11 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.io.Serializable
 import java.math.BigDecimal
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.time.LocalDate
 import java.time.Month
 import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.Calendar
 import java.util.Locale
@@ -365,18 +367,20 @@ class MainPrenotazione : AppCompatActivity() {
                 val i = Intent(this, ReminderReceiver::class.java)
                 i.putExtra("title", "Ricorda la tua prenotazione!")
                 i.putExtra("desc", "Hai una prenotazione per le 09:00 di domani")
-                val pendingIntent =
-                    PendingIntent.getBroadcast(this, 0, i, PendingIntent.FLAG_IMMUTABLE)
+                val pendingIntent = PendingIntent.getBroadcast(this, 0, i,
+                    PendingIntent.FLAG_IMMUTABLE)
 
                 // Creare un oggetto AlarmManager
                 val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-                val dateTime = startDate.atTime(9, 0)
-                // Impostare l'allarme per 24 ore prima dell'orario di prenotazione
-                val reminderTime =
-                    dateTime.toInstant(ZoneId.systemDefault().rules.getOffset(dateTime))
-                        .toEpochMilli() - 24 * 60 * 60 * 1000; // sottrarre 24 ore in millisecondi
-                alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime, pendingIntent)
+                val zoneId = ZoneId.systemDefault()
+                val startZonedDateTime = ZonedDateTime.of(startDate.atTime(9, 0), zoneId)
+
+                // Calcola la data e l'ora dell'allarme
+                val reminderTime = startZonedDateTime.minus(Duration.ofHours(24))
+
+                // Imposta l'allarme
+                alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime.toInstant().toEpochMilli(), pendingIntent)
             }
         }
 

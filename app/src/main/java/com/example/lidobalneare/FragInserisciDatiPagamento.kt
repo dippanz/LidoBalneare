@@ -335,16 +335,31 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
                     binding.editTextCvv.text.toString(),
                     LocalDate.parse(binding.editTextScadenza.text.toString(), formatter)
                 )
+
+                Utente.getInstance().setCarta(
+                    binding.editTextNumero.text.toString(),
+                    binding.editTextCvv.text.toString(),
+                    LocalDate.parse(binding.editTextScadenza.text.toString(), formatter)
+                    )
             }
 
             if(binding.radioButtonBonificoTendina.isChecked &&
                 binding.textViewErroreNumConto.text == "") {
                 DBMSboundary().insertCC(requireContext(), binding.editTextNumConto.text.toString())
+                Utente.getInstance().setCc("0",
+                    binding.editTextNumConto.text.toString(),
+                    Utente.getInstance().getNome() + Utente.getInstance().getCognome()
+                    )
             }
 
             if(binding.radioButtonPayPalTendina.isChecked &&
                 binding.textViewErroreMailPayPal.text == "") {
                 DBMSboundary().insertPaypal(requireContext(), binding.editTextMailPayPal.text.toString())
+                Utente.getInstance().setPaypal("0",
+                    binding.editTextMailPayPal.text.toString(),
+                    Utente.getInstance().getNome() + Utente.getInstance().getCognome(),
+                    Utente.getInstance().getTelefono()
+                )
             }
 
             parentFragmentManager.popBackStack()
