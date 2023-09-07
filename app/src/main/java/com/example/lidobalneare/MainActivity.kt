@@ -141,21 +141,21 @@ class MainActivity : AppCompatActivity() {
             adapterViewPager = ImageHomeAdapter(Utente.getInstance().getImagePromo() as MutableList<Bitmap>)
         }
 
-
-
-
-
         binding.viewPager.adapter = adapterViewPager
         binding.dotsIndicator.attachTo(binding.viewPager)
-
-
 
         //setto parte inferiore home
         binding.navigationBar.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.buttonProfilo -> {
-                    val i = Intent(this, MainProfilo::class.java)
-                    startActivity(i)
+                    if(Utente.getInstance().isLoggedIn()){
+                        val i = Intent(this, MainProfilo::class.java)
+                        startActivity(i)
+                    }else{
+                        val i = Intent(this, MainActivitySchermateVuote::class.java)
+                        i.putExtra("layout", R.layout.frag_loggin)
+                        startActivity(i)
+                    }
                     true
                 }
 

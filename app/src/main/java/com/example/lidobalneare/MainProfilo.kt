@@ -14,12 +14,7 @@ class MainProfilo : AppCompatActivity() {
         setContentView(binding.root)
 
         val manager = supportFragmentManager.beginTransaction()
-        if(Utente.getInstance().isLoggedIn()){
-            manager.replace(R.id.containerProfilo, FragProfilo())
-        }else{
-            //se non è stato effettuato l'accesso allora lo faccio
-            manager.replace(R.id.containerProfilo, FragLoggin())
-        }
+        manager.replace(R.id.containerProfilo, FragProfilo())
         manager.commit()
 
         //setto parte inferiore profilo
