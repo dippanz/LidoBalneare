@@ -676,7 +676,9 @@ class DBMSboundary {
 
         ClientNetwork.retrofit.remove(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-
+                if(response.isSuccessful){
+                    Log.i("msg", "Correttamente eliminato")
+                }
             }
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
@@ -684,6 +686,24 @@ class DBMSboundary {
             }
         })
     }
+
+    fun removePrenotazione(id: String) {
+        val query = "DELETE FROM prenotazioni WHERE id = $id"
+
+        ClientNetwork.retrofit.remove(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    Log.i("msg", "Correttamente eliminato")
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+
+            }
+        })
+    }
+
+
 
     fun getNotifiche(context: Context, callback: QueryReturnCallback<List<ModelNotifica>>, id: Int) {
 

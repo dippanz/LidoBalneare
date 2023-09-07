@@ -14,6 +14,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.example.lidobalneare.databinding.ActivityMainPrenotazioneBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import java.io.Serializable
@@ -101,10 +102,10 @@ class MainPrenotazione : AppCompatActivity() {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.buttonPrenota2.visibility = View.VISIBLE
                         binding.parentPrenotazione.setBackgroundColor(backgroundParent)
-                        binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.white))
-                        binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.white))
-                        binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.white))
-                        binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(resources.getColor(R.color.white))
+                        binding.imageButtonLettino.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
+                        binding.imageButtonPerson.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
+                        binding.imageButtonCalendar.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
+                        binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
 
                         if(manager.backStackEntryCount != 0){
                             manager.popBackStack()
@@ -115,11 +116,11 @@ class MainPrenotazione : AppCompatActivity() {
                         binding.buttonPrenota2.visibility = View.GONE
 
                         //rendo il dietro scuro
-                        binding.imageButtonLettino.setBackgroundColor(resources.getColor(R.color.trasparente))
-                        binding.imageButtonPerson.setBackgroundColor(resources.getColor(R.color.trasparente))
-                        binding.imageButtonCalendar.setBackgroundColor(resources.getColor(R.color.trasparente))
-                        binding.parentPrenotazione.setBackgroundColor(resources.getColor(R.color.grigio_chiaro))
-                        binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(resources.getColor(R.color.trasparente))
+                        binding.imageButtonLettino.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
+                        binding.imageButtonPerson.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
+                        binding.imageButtonCalendar.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
+                        binding.parentPrenotazione.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.grigio_chiaro))
+                        binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
 
                     }
                     else -> Log.i("msg", "stato: $newState")

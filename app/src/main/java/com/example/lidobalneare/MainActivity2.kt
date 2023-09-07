@@ -26,7 +26,7 @@ class MainActivity2 : AppCompatActivity() {
         DBMSboundary().getPrenotazioni(applicationContext, object : QueryReturnCallback<List<ModelPrenotazione>>{
             override fun onReturnValue(response: List<ModelPrenotazione>, message: String) {
                 if(response.isNotEmpty()){
-                    binding.recyclerviewPrenotazioni.adapter = AdapterListPrenotazioni(applicationContext, response)
+                    binding.recyclerviewPrenotazioni.adapter = AdapterListPrenotazioni(applicationContext, response.toMutableList())
                 }else{
                     binding.recyclerviewPrenotazioni.visibility = View.GONE
                     binding.avvisoNoPrenotazioni.visibility = View.VISIBLE
@@ -72,10 +72,5 @@ class MainActivity2 : AppCompatActivity() {
             }
 
         }
-
-
-
-
-
     }
 }

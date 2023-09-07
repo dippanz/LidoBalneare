@@ -1,5 +1,6 @@
 package com.example.lidobalneare
 
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.LayoutInflater
@@ -16,13 +17,14 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Locale
 
-class AdapterListPrenotazioni(val context: Context, val mList: List<ModelPrenotazione>) : RecyclerView.Adapter<AdapterListPrenotazioni.ViewHolder>() {
+class AdapterListPrenotazioni(val context: Context, val mList: MutableList<ModelPrenotazione>) : RecyclerView.Adapter<AdapterListPrenotazioni.ViewHolder>() {
 
     inner class ViewHolder(val binding: CardViewListPrenotazioniBinding) : RecyclerView.ViewHolder(binding.root) {
         val cod = binding.codPrenotazione
         val date = binding.textDataPrenotazione
         val qr = binding.codiceQR
         val numPerson = binding.textNumPersonePrenotazione
+        val buttonCancella = binding.buttonCancellaPrenotazioni
     }
 
     override fun onCreateViewHolder(
@@ -57,10 +59,47 @@ class AdapterListPrenotazioni(val context: Context, val mList: List<ModelPrenota
 
             if(localDate != null && localDate.isAfter(LocalDate.now())){
                 holder.binding.attivo.visibility = View.VISIBLE
+                holder.buttonCancella.visibility = View.VISIBLE
+
+                //se la prenotazione è ancora attiva posso cancellarla altrimenti no
+                holder.buttonCancella.setOnClickListener {
+                    showConfirmationDialog(holder.itemView.context, position)
+                }
+
             }else{
                 holder.binding.attivo.visibility = View.GONE
+                holder.buttonCancella.visibility = View.GONE
             }
+    }
 
+    private fun showConfirmationDialog(c: Context, position: Int) {
+        val builder = AlertDialog.Builder(c)
+        builder.setTitle("Conferma cancellazione")
+        builder.setMessage("Sei sicuro di voler cancellare la prenotazione?\nSi ricorda che non sono previsti rimborsi!")
+
+        // Aggiungere il pulsante "OK" per confermare la cancellazione
+        builder.setPositiveButton("OK") { dialog, which ->
+            // Questa parte verrà eseguita quando l'utente preme il pulsante "OK"
+
+            // Rimuovi l'elemento dalla lista e dal database
+            val removedItem = mList.removeAt(position)
+            DBMSboundary().removePrenotazione(removedItem.codPrenotazione.toString())
+
+            // Notifica all'adapter dei cambiamenti
+            notifyItemRemoved(position)
+            notifyItemRangeChanged(position, mList.size)
+        }
+
+        // Aggiungere il pulsante "Annulla" per annullare l'operazione
+        builder.setNegativeButton("Annulla") { dialog, which ->
+
+        }
+
+        // Mostra il messaggio di conferma
+        val dialog: AlertDialog = builder.create()
+        if (!dialog.isShowing) {
+            dialog.show()
+        }
     }
 
     // Funzione per generare un codice QR da un ID numerico
