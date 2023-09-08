@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">lido balneare</string>
+    <string name="app_name">BagBeach</string>
     <string name="prenota">PRENOTA</string>
     <string name="prenotazioni">PRENOTAZIONI</string>
     <string name="home">HOME</string>
@@ -153,4 +153,20 @@
     <string name="nessuna_nuova_notifica_presente">Nessuna nuova notifica presente</string>
     <string name="x">X</string>
     <string name="non_sono_state_effettuate_prenotazioni">Non sono state effettuate prenotazioni</string>
+    <string name="inserisci_almeno_un_dato">Inserisci almeno un dato</string>
+    <string name="le_modifiche_non_sono_state_applicate">Le modifiche non sono state applicate</string>
+    <string name="modifiche_applicate">Modifiche applicate!</string>
+    <string name="la_vecchia_password_non_corretta">La vecchia password non è corretta!</string>
+    <string name="la_nuova_password_troppo_debole">La nuova password è troppo debole!</string>
+    <string name="inserire_una_password_diversa_da_quella_vecchia">Inserire una password diversa da quella vecchia</string>
+    <string name="errore_inserimento_pass">errore inserimento pass</string>
+    <string name="failed_inserimento_pass">failed inserimento pass</string>
+    <string name="il_pagamento_non_andato_a_buon_fine_inserire_metodo_di_pagamento">Il pagamento non è andato a buon fine!\nInserire metodo di pagamento</string>
+    <string name="soldi_non_sufficienti_caricare_altro_conto_paypal">Soldi non sufficienti, caricare altro conto PayPal</string>
+    <string name="soldi_non_sufficienti_caricare_altra_carta">Soldi non sufficienti, caricare altra carta</string>
+    <string name="soldi_non_sufficienti_caricare_altro_conto_corrente">Soldi non sufficienti, caricare altro conto corrente</string>
+    <string name="seleziona_un_metodo_di_pagamento">Seleziona un metodo di pagamento</string>
+    <string name="numero_di_telefono_formato_errato">numero di telefono formato errato</string>
+    <string name="inserisci_mail_valida">Inserisci mail valida</string>
+    <string name="errore_inserimento_mail">errore inserimento mail</string>
 </resources>

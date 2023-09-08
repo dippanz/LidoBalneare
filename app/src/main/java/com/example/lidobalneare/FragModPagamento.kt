@@ -40,7 +40,7 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
 
 
         var radioButton = 0
-        view.findViewById<RadioGroup>(R.id.radioGroup).setOnCheckedChangeListener { group, checkedId ->
+        view.findViewById<RadioGroup>(R.id.radioGroup).setOnCheckedChangeListener { _, checkedId ->
             radioButton = when (checkedId) {
                 R.id.radioButtonPayPal -> {
                     1
@@ -83,12 +83,14 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
                             t.commit()
 
                         } else {
-                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!\nInserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.il_pagamento_non_andato_a_buon_fine_inserire_metodo_di_pagamento), Toast.LENGTH_SHORT).show()
                         }
 
                     } catch (e: IllegalStateException) {
                         e.printStackTrace()
-                        Toast.makeText(requireContext(), "Soldi non sufficienti, caricare altro conto PayPal", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.soldi_non_sufficienti_caricare_altro_conto_paypal), Toast.LENGTH_SHORT).show()
                         Utente.getInstance().clearPaypal()
 
                     }
@@ -115,12 +117,13 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
                             t.commit()
 
                         } else {
-                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!\nInserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.il_pagamento_non_andato_a_buon_fine_inserire_metodo_di_pagamento), Toast.LENGTH_SHORT).show()
                         }
 
                     } catch (e: IllegalStateException) {
                         e.printStackTrace()
-                        Toast.makeText(requireContext(), "Soldi non sufficienti, caricare altra carta", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.soldi_non_sufficienti_caricare_altra_carta), Toast.LENGTH_SHORT).show()
                         Utente.getInstance().clearCarta()
 
                     }
@@ -145,12 +148,13 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
                             t.commit()
 
                         } else {
-                            Toast.makeText(requireContext(), "Il pagamento non è andato a buon fine!\nInserire metodo di pagamento", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.il_pagamento_non_andato_a_buon_fine_inserire_metodo_di_pagamento), Toast.LENGTH_SHORT).show()
                         }
 
                     } catch (e: IllegalStateException) {
                         e.printStackTrace()
-                        Toast.makeText(requireContext(), "Soldi non sufficienti, caricare altro conto corrente", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(),
+                            getString(R.string.soldi_non_sufficienti_caricare_altro_conto_corrente), Toast.LENGTH_SHORT).show()
                         Utente.getInstance().clearCC()
 
                     }
@@ -159,7 +163,7 @@ class FragModPagamento: Fragment(R.layout.frag_mod_pagamento) {
                 else -> {
                     Toast.makeText(
                         requireContext(),
-                        "Seleziona un metodo di pagamento",
+                        getString(R.string.seleziona_un_metodo_di_pagamento),
                         Toast.LENGTH_LONG
                     ).show()
                 }

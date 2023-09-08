@@ -79,12 +79,7 @@ class DBMSboundary {
                 }
             }
 
-            /**
-             * @return ritorna true se la password corrisponde altrimenti false
-             */
-            private fun verifyPassword(pass: String?, hashedPassword: String): Boolean {
-                return pass != null && BCrypt.checkpw(pass, hashedPassword)
-            }
+
 
             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
                 callback.onQueryFailed(context.getString(R.string.query_failed))
@@ -92,6 +87,14 @@ class DBMSboundary {
 
         })
         
+    }
+
+    /**
+     * @param pass password senza hash
+     * @return ritorna true se la password corrisponde altrimenti false
+     */
+    private fun verifyPassword(pass: String?, hashedPassword: String): Boolean {
+        return pass != null && BCrypt.checkpw(pass, hashedPassword)
     }
 
     fun getAltreInfoUtente(context: Context, callback: QueryReturnCallback<Int>,id: String){
@@ -188,12 +191,18 @@ class DBMSboundary {
 
     }
 
+    private fun hashPassword(password: String): String {
+        val salt = BCrypt.gensalt(12) // Genera un salt con un costo di 12 (valore consigliato)
+        return BCrypt.hashpw(password, salt)
+    }
+
     /**
      * @param list deve contenere in ordine 5 elementi: nome, cognome, telefono, email, pass
       */
     fun insertUtente(context: Context, callback: QueryReturnCallback<Int>, list: List<String>){
         if(list.size > 4){
-            val query = "insert into utente(nome, cognome, telefono, email, pass) values ('${list[0]}', '${list[1]}', '${list[2]}', '${list[3]}', '${list[4]}')"
+            val passDB = hashPassword(list[4])
+            val query = "insert into utente(nome, cognome, telefono, email, pass) values ('${list[0]}', '${list[1]}', '${list[2]}', '${list[3]}', '$passDB')"
 
             ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
                 override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -236,53 +245,74 @@ class DBMSboundary {
                             Utente.getInstance().setTelefono(list[2])
                             changment = true
                         }else{
-                            Toast.makeText(context, "numero di telefono formato errato", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context.getString(R.string.numero_di_telefono_formato_errato), Toast.LENGTH_SHORT).show()
                         }
                     }
                     3 -> {
-                        //query per cambiare la mail
-                        //per cambiare la mail devo verificare che non ne esista gia una
-                        val queryMail = "select id from webmobile.utente where email = '${list[3]}'"
+                        if(!isEmailValid(list[3])){
+                            Toast.makeText(context,
+                                context.getString(R.string.inserisci_mail_valida), Toast.LENGTH_SHORT).show()
+                        }else {
+                            //query per cambiare la mail
+                            //per cambiare la mail devo verificare che non ne esista gia una
+                            val queryMail =
+                                "select id from webmobile.utente where email = '${list[3]}'"
 
-                        ClientNetwork.retrofit.select(queryMail).enqueue(object : Callback<JsonObject>{
-                            override fun onResponse(
-                                call: Call<JsonObject>,
-                                response: Response<JsonObject>
-                            ) {
-                                if(response.isSuccessful){
-                                   val result = response.body()!!.getAsJsonArray("queryset")
-                                    if(result.size() == 0 && isEmailValid(list[3])){
-                                        //se entro non esistono email uguali a quella nuova inserita quindi aggiorno
-                                        ClientNetwork.retrofit.update("UPDATE utente SET email = '${list[3]}' where id = $id").
-                                        enqueue(object : Callback<JsonObject>{
-                                            override fun onResponse(
-                                                call: Call<JsonObject>,
-                                                response: Response<JsonObject>
-                                            ) {
-                                                if(!response.isSuccessful){
-                                                    Toast.makeText(context, "errore inserimento mail", Toast.LENGTH_SHORT).show()
-                                                }else{
-                                                    Utente.getInstance().setEmail(list[3])
-                                                    callback.onReturnValue(200, context.getString(R.string.query_successful))
-                                                }
+                            ClientNetwork.retrofit.select(queryMail)
+                                .enqueue(object : Callback<JsonObject> {
+                                    override fun onResponse(
+                                        call: Call<JsonObject>,
+                                        response: Response<JsonObject>
+                                    ) {
+                                        if (response.isSuccessful) {
+                                            val result =
+                                                response.body()!!.getAsJsonArray("queryset")
+                                            if (result.size() == 0) {
+                                                //se entro non esistono email uguali a quella nuova inserita quindi aggiorno
+                                                ClientNetwork.retrofit.update("UPDATE utente SET email = '${list[3]}' where id = $id")
+                                                    .enqueue(object : Callback<JsonObject> {
+                                                        override fun onResponse(
+                                                            call: Call<JsonObject>,
+                                                            response: Response<JsonObject>
+                                                        ) {
+                                                            if (!response.isSuccessful) {
+                                                                Toast.makeText(
+                                                                    context,
+                                                                    context.getString(R.string.errore_inserimento_mail),
+                                                                    Toast.LENGTH_SHORT
+                                                                ).show()
+                                                            } else {
+                                                                Utente.getInstance()
+                                                                    .setEmail(list[3])
+                                                                callback.onReturnValue(
+                                                                    200,
+                                                                    context.getString(R.string.query_successful)
+                                                                )
+                                                            }
+                                                        }
+
+                                                        override fun onFailure(
+                                                            call: Call<JsonObject>,
+                                                            t: Throwable
+                                                        ) {
+                                                            Toast.makeText(
+                                                                context,
+                                                                "failed inserimento mail",
+                                                                Toast.LENGTH_SHORT
+                                                            ).show()
+                                                        }
+                                                    })
                                             }
 
-                                            override fun onFailure(
-                                                call: Call<JsonObject>,
-                                                t: Throwable
-                                            ) {
-                                                Toast.makeText(context, "failed inserimento mail", Toast.LENGTH_SHORT).show()
-                                            }
-                                        })
+                                        }
                                     }
 
-                                }
-                            }
+                                    override fun onFailure(call: Call<JsonObject>, t: Throwable) {
 
-                            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-
-                            }
-                        })
+                                    }
+                                })
+                        }
                     }
                     4 -> {
                         //query per aggiornare la password
@@ -294,19 +324,30 @@ class DBMSboundary {
                             ) {
                                 if(response.isSuccessful){
                                     val result = response.body()!!.getAsJsonArray("queryset")[0].asJsonObject.get("pass").asString
-                                    if(result == list[4] && isPasswordStrong(list[5])){
-                                        if(result == list[5]){
-                                            Toast.makeText(context, "inserire password diversa da quella vecchia", Toast.LENGTH_SHORT).show()
+                                    val oldPass = list[4]
+                                    if(!verifyPassword(oldPass, result)){
+                                        Toast.makeText(context,
+                                            context.getString(R.string.la_vecchia_password_non_corretta), Toast.LENGTH_SHORT).show()
+                                    }else if(!isPasswordStrong(list[5])){
+                                        Toast.makeText(context,
+                                            context.getString(R.string.la_nuova_password_troppo_debole), Toast.LENGTH_SHORT).show()
+                                    }else{
+                                        val newPass = list[5]
+                                        if(verifyPassword(newPass, result)){
+                                            Toast.makeText(context,
+                                                context.getString(R.string.inserire_una_password_diversa_da_quella_vecchia), Toast.LENGTH_SHORT).show()
                                         }else{
+                                            val newPassDB = hashPassword(list[5])
                                             //pass vecchia corretta e quella ha il formato giusto
-                                            ClientNetwork.retrofit.update("UPDATE utente SET pass = '${list[5]}' where id = $id").
+                                            ClientNetwork.retrofit.update("UPDATE utente SET pass = '$newPassDB' where id = $id").
                                             enqueue(object : Callback<JsonObject>{
                                                 override fun onResponse(
                                                     call: Call<JsonObject>,
                                                     response: Response<JsonObject>
                                                 ) {
                                                     if(!response.isSuccessful){
-                                                        Toast.makeText(context, "errore inserimento pass", Toast.LENGTH_SHORT).show()
+                                                        Toast.makeText(context,
+                                                            context.getString(R.string.errore_inserimento_pass), Toast.LENGTH_SHORT).show()
                                                     }else{
                                                         callback.onReturnValue(200, context.getString(R.string.query_successful))
                                                     }
@@ -316,17 +357,17 @@ class DBMSboundary {
                                                     call: Call<JsonObject>,
                                                     t: Throwable
                                                 ) {
-                                                    Toast.makeText(context, "failed inserimento pass", Toast.LENGTH_SHORT).show()
+                                                    Toast.makeText(context,
+                                                        context.getString(R.string.failed_inserimento_pass), Toast.LENGTH_SHORT).show()
                                                 }
                                             })
                                         }
-
                                     }
                                 }
                             }
 
                             override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                                TODO("Not yet implemented")
+                                callback.onQueryFailed(context.getString(R.string.query_failed))
                             }
                         })
                     }
@@ -349,14 +390,12 @@ class DBMSboundary {
                 }
             })
             callback.onReturnValue(200, context.getString(R.string.query_successful))
-        }else{
-            Toast.makeText(context, "inserisci almeno un dato", Toast.LENGTH_SHORT).show()
         }
     }
 
      fun isPhoneNumberValid(input: String): Boolean {
         // Rimuove tutti i caratteri non numerici dalla stringa
-        val digitsOnly = input.replace("[^\\d]".toRegex(), "")
+        val digitsOnly = input.replace("\\D".toRegex(), "")
         return digitsOnly.length == 10
     }
 
@@ -784,9 +823,7 @@ class DBMSboundary {
 
     }
 
-    /**
-     * @param listNomiServizi contiene i nomi dei servizi dei quali prendere l'immagine
-     */
+
     fun getImageHome(context: Context, callback: QueryReturnCallback<ViewModelHomePage>){
 
 

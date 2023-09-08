@@ -33,7 +33,7 @@ class CalendarFragment: Fragment(R.layout.calendar_nested) {
 
 
         //setta graficamente le date selezionate
-        calendarView.setOnDateChangedListener { widget, date, selected ->
+        calendarView.setOnDateChangedListener { _, date, selected ->
 
             if(selected){
                 if(firstDate == null || date.isBefore(firstDate!!)){

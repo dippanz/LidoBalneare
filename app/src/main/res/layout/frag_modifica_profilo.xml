@@ -103,7 +103,7 @@
             <EditText
                 android:id="@+id/editTextVecchiaPass"
                 style="@style/modifiedEditText"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:hint="@string/vecchia_password"/>
         </com.google.android.material.textfield.TextInputLayout>
@@ -116,7 +116,7 @@
             <EditText
                 android:id="@+id/editTextNewPass"
                 style="@style/modifiedEditText"
-                android:inputType="text"
+                android:inputType="textPassword"
                 android:maxLines="1"
                 android:hint="@string/nuova_password"/>
         </com.google.android.material.textfield.TextInputLayout>

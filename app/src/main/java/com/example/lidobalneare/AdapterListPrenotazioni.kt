@@ -78,7 +78,7 @@ class AdapterListPrenotazioni(val context: Context, val mList: MutableList<Model
         builder.setMessage("Sei sicuro di voler cancellare la prenotazione?\nSi ricorda che non sono previsti rimborsi!")
 
         // Aggiungere il pulsante "OK" per confermare la cancellazione
-        builder.setPositiveButton("OK") { dialog, which ->
+        builder.setPositiveButton("OK") { _, _ ->
             // Questa parte verrà eseguita quando l'utente preme il pulsante "OK"
 
             // Rimuovi l'elemento dalla lista e dal database
@@ -91,7 +91,7 @@ class AdapterListPrenotazioni(val context: Context, val mList: MutableList<Model
         }
 
         // Aggiungere il pulsante "Annulla" per annullare l'operazione
-        builder.setNegativeButton("Annulla") { dialog, which ->
+        builder.setNegativeButton("Annulla") { _, _ ->
 
         }
 

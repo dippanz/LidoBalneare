@@ -73,7 +73,7 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
         parentFragmentManager.setFragmentResult("costoTotale", bundle)
 
 
-        view.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).setOnCheckedChangeListener { compoundButton, b ->
+        view.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).setOnCheckedChangeListener { _, b ->
             if(b){
                 val scontoPagaAnticipo = applicaSconto(SCONTO_PAGA_IN_ANTICIPO, true)
                 view.findViewById<TextView>(R.id.textScontoPagaInAnticipo).text = resources.getString(R.string.euro_variabile_sconto,scontoPagaAnticipo)

@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.lidobalneare.databinding.FragLogginBinding
-import org.mindrot.jbcrypt.BCrypt
 
 class FragLoggin: Fragment(R.layout.frag_loggin) {
 
@@ -129,7 +128,7 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
                 list.add(cognome)
                 list.add(telefono)
                 list.add(email)
-                list.add(hashPassword(password))
+                list.add(password)
 
                 DBMSboundary().insertUtente(requireContext(), object : QueryReturnCallback<Int> {
                     override fun onReturnValue(response: Int, message: String) {
@@ -173,10 +172,7 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
         }
     }
 
-    private fun hashPassword(password: String): String {
-        val salt = BCrypt.gensalt(12) // Genera un salt con un costo di 12 (valore consigliato)
-        return BCrypt.hashpw(password, salt)
-    }
+
 
 
 

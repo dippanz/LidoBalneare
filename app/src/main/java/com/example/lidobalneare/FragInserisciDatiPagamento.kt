@@ -281,7 +281,7 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
         val radioButtonCarta = view.findViewById<RadioButton>(R.id.radioButtonCartaTendina)
         var checkRadioButtonCarta = true
         //imposto i radioButton per caricare i dati
-        radioButtonCarta.setOnClickListener { v ->
+        radioButtonCarta.setOnClickListener { _ ->
             val linearLayoutCartaTendina = view.findViewById<LinearLayout>(R.id.linearLayoutCartaTendina)
             if(checkRadioButtonCarta){
                 linearLayoutCartaTendina.visibility = View.VISIBLE
@@ -296,7 +296,7 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
         val radioButtonPayPalTendina = view.findViewById<RadioButton>(R.id.radioButtonPayPalTendina)
         var checkRadioButtonPayPal = true
         //imposto i radioButton per caricare i dati
-        radioButtonPayPalTendina.setOnClickListener { v ->
+        radioButtonPayPalTendina.setOnClickListener { _ ->
             val linearLayoutPayPalTendina = view.findViewById<LinearLayout>(R.id.linearLayoutPayPalTendina)
             if(checkRadioButtonPayPal){
                 linearLayoutPayPalTendina.visibility = View.VISIBLE
@@ -311,7 +311,7 @@ FragInserisciDatiPagamento: Fragment(R.layout.frag_inserisci_dati_pagamento) {
         val radioButtonBonificoTendina = view.findViewById<RadioButton>(R.id.radioButtonBonificoTendina)
         var checkRadioButtonBonifico = true
         //imposto i radioButton per caricare i dati
-        radioButtonBonificoTendina.setOnClickListener { v ->
+        radioButtonBonificoTendina.setOnClickListener { _ ->
             val linearLayoutBonificoTendina = view.findViewById<LinearLayout>(R.id.linearLayoutBonificoTendina)
             if(checkRadioButtonBonifico){
                 linearLayoutBonificoTendina.visibility = View.VISIBLE
