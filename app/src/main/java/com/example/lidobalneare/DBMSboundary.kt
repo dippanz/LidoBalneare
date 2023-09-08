@@ -831,7 +831,6 @@ class DBMSboundary {
                                 }
                             })
                         }
-
                     }else{
                         callback.onQueryError(context.getString(R.string.query_error))
                     }
