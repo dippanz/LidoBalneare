@@ -47,7 +47,7 @@ class FragResoconto(private val viewModelHomePage: ViewModelHomePage, private va
         }
 
         //calcolo vari costi
-        view.findViewById<TextView>(R.id.textPrezzoOriginale).text = getString(R.string.euro_variabile, "${prezzo.units}.${prezzo.nanos}")
+        view.findViewById<TextView>(R.id.textPrezzoOriginale).text = getString(R.string.euro_variabile,  BigDecimal("${prezzo.units}.${prezzo.nanos}").setScale(2, RoundingMode.HALF_UP).toString())
 
         val scontoMobile = if(view.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).isChecked){
             applicaSconto(SCONTO_PAGA_IN_ANTICIPO, true)

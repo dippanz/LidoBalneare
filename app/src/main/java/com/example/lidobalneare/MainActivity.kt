@@ -54,40 +54,40 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(applicationContext, MainPrenotazione::class.java)
 
                     //l'ordine è fissato
-                    when (position) {
-                        0 -> {
+                    when (model.title.lowercase()) {
+                        "barca" -> {
                             intent.putExtra("nome", "barca")
                             //serve per capire se serve il moltiplicatore per il prezzo
                             intent.putExtra("aTesta", true)
                         }
 
-                        1 -> {
+                        "barcagiro" -> {
                             intent.putExtra("nome", "barcagiro")
                             intent.putExtra("aTesta", true)
                         }
 
-                        2 -> {
+                        "lettini" -> {
                             intent.putExtra("nome", "lettini")
                             //questo extra serve a capire se mostrare o meno bottone del lettino
                             intent.putExtra("buttonLettino", true)
                         }
 
-                        3 -> {
+                        "motoacqua" -> {
                             intent.putExtra("nome", "motoacqua")
                             intent.putExtra("aTesta", true)
 
                         }
 
-                        4 -> {
+                        "pedalo" -> {
                             intent.putExtra("nome", "pedalo")
                         }
 
-                        5 -> {
+                        "pingpong" -> {
                             intent.putExtra("nome", "pingpong")
                             intent.putExtra("aTesta", true)
                         }
 
-                        6 -> {
+                        "prive" -> {
                             intent.putExtra("nome", "prive")
                             intent.putExtra("buttonLettino", true)
                         }

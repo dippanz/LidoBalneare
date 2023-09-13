@@ -102,9 +102,6 @@ class MainPrenotazione : AppCompatActivity() {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.buttonPrenota2.visibility = View.VISIBLE
                         binding.parentPrenotazione.setBackgroundColor(backgroundParent)
-                        binding.imageButtonLettino.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
-                        binding.imageButtonPerson.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
-                        binding.imageButtonCalendar.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
                         binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.white))
 
                         if(manager.backStackEntryCount != 0){
@@ -116,9 +113,6 @@ class MainPrenotazione : AppCompatActivity() {
                         binding.buttonPrenota2.visibility = View.GONE
 
                         //rendo il dietro scuro
-                        binding.imageButtonLettino.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
-                        binding.imageButtonPerson.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
-                        binding.imageButtonCalendar.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
                         binding.parentPrenotazione.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.grigio_chiaro))
                         binding.includedRecensioni.parentCardRecensioni.setBackgroundColor(ContextCompat.getColor(applicationContext, R.color.trasparente))
 
@@ -141,10 +135,76 @@ class MainPrenotazione : AppCompatActivity() {
         binding.textNumPersone.text = resources.getString(R.string.persone_1s, "1")
         binding.textNumLettini.text = resources.getString(R.string.lettini_1_s, "1")
 
-        if(!intent.getBooleanExtra("buttonLettino", false)){
+        if(intent.getBooleanExtra("buttonLettino", false)){
             //se non serve nascondo il bottone lettino
-            binding.imageButtonLettino.visibility = View.GONE
-            binding.textNumLettini.visibility = View.GONE
+            binding.imageButtonLettino.visibility = View.VISIBLE
+            binding.textNumLettini.visibility = View.VISIBLE
+
+            //setto listener per capire se impostare moltiplicatore prezzo
+            binding.textNumLettini.addTextChangedListener(object : TextWatcher {
+
+                //prezzo originale preso all'inizio
+                var prezzoTmp: BigDecimal? = null
+
+                var prezzoPersoneTmp: BigDecimal? = null
+                //prezzo che varia al variare delle persone che metto
+                var prezzoDatetmp: BigDecimal? = null
+
+                var beforeChange = 0
+
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                    if(prezzoTmp == null){
+                        prezzoTmp = BigDecimal(
+                            supportFragmentManager.fragments[0].requireActivity().
+                            findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                    }
+
+                    val (startDate, endDate) = parseDateRange(binding.textDate.text.toString())
+                    if(prezzoPersoneTmp == null){
+                        prezzoPersoneTmp = prezzoTmp!!.multiply(BigDecimal(ChronoUnit.DAYS.between(startDate, endDate) + 1))
+                    }
+
+                    prezzoDatetmp = null
+                    beforeChange = s.toString().split(" ")[0].toInt()
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    // Invocato durante la modifica del testo
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    //ricarico il fragResoconto con il nuovo moltiplicatore
+                    val prezzoAttuale = BigDecimal(
+                        supportFragmentManager.fragments[0].requireActivity().
+                        findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                    val numAttuale = s.toString().split(" ")[0].toInt()
+                    val prezzo =
+                        if(beforeChange < numAttuale){
+                            val increase = numAttuale - beforeChange
+                            MyMoney(
+                                prezzoAttuale.add(
+                                    prezzoPersoneTmp?.multiply(
+                                        BigDecimal(increase)) ?: BigDecimal(1)
+                                ))
+
+                        }else  if(beforeChange > numAttuale){
+                            val decrease = beforeChange - numAttuale
+                            MyMoney(
+                                prezzoAttuale.subtract(
+                                    prezzoPersoneTmp?.multiply(
+                                        BigDecimal(decrease)) ?: BigDecimal(1)
+                                ))
+                        }else{
+                            MyMoney(prezzoAttuale)
+                        }
+
+                    val t = manager.beginTransaction()
+                    viewModelCaricato = (intent.getSerializableExtra("cardview") as ViewModelHomePage)
+                    t.replace(R.id.fragment_container_resoconto, FragResoconto(viewModelCaricato, prezzo.toMoney(), 0.1))
+                    t.commit()
+
+                }
+            })
         }
 
 
