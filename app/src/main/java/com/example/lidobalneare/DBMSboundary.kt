@@ -635,8 +635,8 @@ class DBMSboundary {
 
     fun insertDatiCarta(context: Context, numeroCarta: String, cvv: String, data: LocalDate){
 
-        val insertQuery = "INSERT INTO carta_prepagata (numeroCarta, cvv, data_scadenza, utente_id)\n " +
-                "VALUES ('$numeroCarta', '$cvv', '$data', ${Utente.getInstance().getId()})"
+        val insertQuery = "INSERT INTO carta_prepagata (utente_id, numeroCarta, cvv, data_scadenza)\n " +
+                "VALUES (${Utente.getInstance().getId()}, '$numeroCarta', '$cvv', '$data')"
 
         ClientNetwork.retrofit.insert(insertQuery).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -653,8 +653,8 @@ class DBMSboundary {
     }
 
     fun insertPaypal(context: Context, email: String){
-        val query = "INSERT INTO paypal (numeroConto, email, nomeTitolare, telefono, utente_id)\n " +
-                "VALUES ('${generateRandomAlphanumericString()}', '$email', '${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}', '${Utente.getInstance().getTelefono()}', ${Utente.getInstance().getId()})"
+        val query = "INSERT INTO paypal (utente_id, numeroConto, email, nomeTitolare, telefono)\n " +
+                "VALUES (${Utente.getInstance().getId()}, '${generateRandomAlphanumericString()}', '$email', '${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}', '${Utente.getInstance().getTelefono()}')"
 
         ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -677,8 +677,8 @@ class DBMSboundary {
     }
 
     fun insertCC(context: Context, iban: String){
-        val query = "INSERT INTO cc (numeroConto, iban, nomeTitolare, utente_id)\n " +
-                "VALUES ('${generateRandomAlphanumericString()}', '$iban', '${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}', ${Utente.getInstance().getId()});"
+        val query = "INSERT INTO cc (utente_id, numeroConto, iban, nomeTitolare)\n " +
+                "VALUES (${Utente.getInstance().getId()}, '${generateRandomAlphanumericString()}', '$iban', '${Utente.getInstance().getNome()} ${Utente.getInstance().getCognome()}');"
 
         ClientNetwork.retrofit.insert(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
