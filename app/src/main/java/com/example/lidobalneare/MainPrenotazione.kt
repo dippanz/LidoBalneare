@@ -428,6 +428,7 @@ class MainPrenotazione : AppCompatActivity() {
 
                     //creo notifica per ricordare la prenotazione un giorno prima
                    if(!response && LocalDate.now().isBefore(startDate.minusDays(1))) {
+                       Log.i("msg", "creo notifica")
 
                        // Creare un ID per il canale di notifica
                        val channelId = "canale_prenotazioni"

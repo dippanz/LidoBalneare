@@ -884,7 +884,7 @@ class DBMSboundary {
         val query = "select * from webmobile.prenotazioni where dataPrenotazioneInizio = '$startDate' and" +
                 " dataPrenotazioneFine = '$endDate' and nomeServizio = '$nomeServizio' and utente_id = $id"
 
-        Log.i("msg", query)
+
 
         ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
