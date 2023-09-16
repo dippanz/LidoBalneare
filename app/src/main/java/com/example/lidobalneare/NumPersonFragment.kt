@@ -23,6 +23,9 @@ class NumPersonFragment: Fragment(R.layout.view_num_person_nested) {
             binding.linearLayout3.visibility = View.GONE
         }
 
+        binding.textNumVariabile1.text = (arguments?.getInt("numPersone") ?: "1").toString()
+        binding.textNumVariabile2.text = (arguments?.getInt("numLettini") ?: "1").toString()
+
         binding.add1.setOnClickListener {
             val textView = binding.textNumVariabile1
             if(textView.text.toString().toInt() < 9){
@@ -68,11 +71,6 @@ class NumPersonFragment: Fragment(R.layout.view_num_person_nested) {
             requireActivity().findViewById<TextView>(R.id.textNumPersone)?.text = resources.getString(R.string.persone_1s, binding.textNumVariabile1.text)
             requireActivity().findViewById<TextView>(R.id.textNumLettini)?.text = resources.getString(R.string.lettini_1_s, binding.textNumVariabile2.text)
         }
-
-
-
-
-
     }
 
     override fun onCreateView(

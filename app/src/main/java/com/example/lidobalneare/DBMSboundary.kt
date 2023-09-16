@@ -55,6 +55,8 @@ class DBMSboundary {
     fun getCredenziali(context: Context, callback: QueryReturnCallback<Utente>, email: String, password: String){
         val query = "SELECT * FROM webmobile.utente where email = \"$email\""
 
+        Log.i("msg", query)
+
         ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if(response.isSuccessful){
@@ -836,7 +838,6 @@ class DBMSboundary {
 
                         for (e in result){
                             val imageUrl = "http://10.0.2.2:8000/webmobile${e.asJsonObject.get("mediaPath").asString}"
-                            Log.i("msg", imageUrl)
 
                             // Esegui la richiesta per ottenere l'immagine
                             ClientNetwork.retrofit.getImage(imageUrl).enqueue(object : Callback<ResponseBody> {
@@ -877,10 +878,32 @@ class DBMSboundary {
                     callback.onQueryError(context.getString(R.string.query_failed))
                 }
             })
+    }
 
+    fun checkPrenotazioni(startDate: LocalDate, endDate: LocalDate, nomeServizio: String?, id: Int, context: Context, callback: QueryReturnCallback<Boolean>){
+        val query = "select * from webmobile.prenotazioni where dataPrenotazioneInizio = '$startDate' and" +
+                " dataPrenotazioneFine = '$endDate' and nomeServizio = '$nomeServizio' and utente_id = $id"
 
+        Log.i("msg", query)
 
+        ClientNetwork.retrofit.select(query).enqueue(object : Callback<JsonObject>{
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if(response.isSuccessful){
+                    val result = response.body()!!.getAsJsonArray("queryset")
+                    if(result.size() == 0){
+                        callback.onReturnValue(false, context.getString(R.string.query_successful))
+                    }else{
+                        callback.onReturnValue(true, "")
+                    }
+                }else{
+                    callback.onQueryError(context.getString(R.string.query_error))
+                }
+            }
 
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                callback.onQueryError(context.getString(R.string.query_failed))
+            }
+        })
 
     }
 

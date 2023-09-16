@@ -42,64 +42,62 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
             val email = binding.includedLogin.editTextEmail.text.toString()
             val pass = binding.includedLogin.editTextPassword.text.toString()
 
-            Log.i("msg", "mail: $email")
-            Log.i("msg", "loggato dopo mail: ${Utente.getInstance().isLoggedIn()}")
+            if(email.isNotEmpty() && pass.isNotEmpty()){
+                //recupero un account con questa mail se non è presente butto messaggio di errore
+                DBMSboundary().getCredenziali(requireContext(), object : QueryReturnCallback<Utente>{
+                    override fun onReturnValue(response: Utente, message: String) {
+                        //ho trovato la corrispondenza
+                        if(response.getId() != -1){
+                            //setto il log
+                            Utente.getInstance().setLoggedIn()
 
-            //recupero un account con questa mail se non è presente butto messaggio di errore
-            DBMSboundary().getCredenziali(requireContext(), object : QueryReturnCallback<Utente>{
-                override fun onReturnValue(response: Utente, message: String) {
-                    //ho trovato la corrispondenza
-                    if(response.getId() != -1){
-                        //setto il log
-                        Utente.getInstance().setLoggedIn()
+                            //faccio altra query per avere il resto delle informazioni per l'utente
+                            DBMSboundary().getAltreInfoUtente(requireContext(), object : QueryReturnCallback<Int>{
+                                override fun onReturnValue(response: Int, message: String) {
+                                }
 
-                        //faccio altra query per avere il resto delle informazioni per l'utente
-                        DBMSboundary().getAltreInfoUtente(requireContext(), object : QueryReturnCallback<Int>{
-                            override fun onReturnValue(response: Int, message: String) {
-                                TODO("Not yet implemented")
+                                override fun onQueryFailed(fail: String) {
+                                    Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+                                }
+
+                                override fun onQueryError(error: String) {
+                                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                                }
+                            }, response.getId().toString())
+
+                            Log.i("msg", "entro qua, log fatto: ${Utente.getInstance().isLoggedIn()}")
+
+                            //ritorno sempre alla home dopo l'accesso
+                            if(Utente.getInstance().isLoggedIn()){
+                                val intent = Intent(requireContext(), MainActivity::class.java)
+                                intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+                                requireActivity().finish()
+                                startActivity(intent)
                             }
 
-                            override fun onQueryFailed(fail: String) {
-                                Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
-                            }
-
-                            override fun onQueryError(error: String) {
-                                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-                            }
-                        }, response.getId().toString())
-
-                        Log.i("msg", "entro qua, log fatto: ${Utente.getInstance().isLoggedIn()}")
-
-                        //ritorno sempre alla home dopo l'accesso
-                        if(Utente.getInstance().isLoggedIn()){
-                            val intent = Intent(requireContext(), MainActivity::class.java)
-                            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-                            requireActivity().finish()
-                            startActivity(intent)
+                        }else{
+                            //log non effettuato
+                            Toast.makeText(requireContext(),
+                                getString(R.string.credenziali_errate_riprovare), Toast.LENGTH_LONG).show()
+                            //pulisco gli edittext
+                            binding.includedLogin.editTextEmail.text.clear()
+                            binding.includedLogin.editTextPassword.text.clear()
                         }
-
-                    }else{
-                        //log non effettuato
-                        Toast.makeText(requireContext(), "Credenziali errate, riprovare!", Toast.LENGTH_LONG).show()
-                        //pulisco gli edittext
-                        binding.includedLogin.editTextEmail.text.clear()
-                        binding.includedLogin.editTextPassword.text.clear()
                     }
-                }
 
-                override fun onQueryFailed(fail: String) {
-                    Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
-                }
+                    override fun onQueryFailed(fail: String) {
+                        Toast.makeText(requireContext(), fail, Toast.LENGTH_SHORT).show()
+                    }
 
-                override fun onQueryError(error: String) {
-                    Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
-                }
+                    override fun onQueryError(error: String) {
+                        Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+                    }
 
-            }, email, pass)
-
-
-
-
+                }, email, pass)
+            }else{
+                Toast.makeText(requireContext(),
+                    getString(R.string.inserire_dati), Toast.LENGTH_LONG).show()
+            }
         }
 
         binding.includedRegister.registerButton.setOnClickListener {
@@ -133,7 +131,8 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
                 DBMSboundary().insertUtente(requireContext(), object : QueryReturnCallback<Int> {
                     override fun onReturnValue(response: Int, message: String) {
                         if (response == 200) {
-                            Toast.makeText(requireContext(), "Inserito correttamente", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.inserito_correttamente), Toast.LENGTH_SHORT).show()
 
                             DBMSboundary().getCredenziali(requireContext(), object : QueryReturnCallback<Utente>{
                                 override fun onReturnValue(response: Utente, message: String) {
@@ -156,7 +155,8 @@ class FragLoggin: Fragment(R.layout.frag_loggin) {
                             }, email, password)
 
                         } else {
-                            Toast.makeText(requireContext(), "Errore inserimento", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(),
+                                getString(R.string.errore_inserimento), Toast.LENGTH_SHORT).show()
                         }
                     }
 

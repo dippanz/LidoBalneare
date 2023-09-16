@@ -35,12 +35,23 @@ class MainPrenotazione : AppCompatActivity() {
     private lateinit var binding: ActivityMainPrenotazioneBinding
     private lateinit var mBottomSheetBehavior: BottomSheetBehavior<*>
     private lateinit var viewModelCaricato: ViewModelHomePage
-
+    private var backgroundParent: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainPrenotazioneBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //setto parte superiore
+        // Formatta la data in "EEE dd MMM" (sab 12 ago)
+        val dateFormat = SimpleDateFormat("EEE dd MMM", Locale.ITALIAN)
+        val formattedDate: String = dateFormat.format(Calendar.getInstance().time)
+        binding.textDate.text = formattedDate
+        binding.textNumPersone.text = resources.getString(R.string.persone_1s, "1")
+        binding.textNumLettini.text = resources.getString(R.string.lettini_1_s, "1")
+
+        //setto colore sfondo
+        backgroundParent = binding.parentPrenotazione.solidColor
 
         val manager = supportFragmentManager
         mBottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet)
@@ -65,7 +76,12 @@ class MainPrenotazione : AppCompatActivity() {
             if(manager.backStackEntryCount == 0) {
                 //carico il fragment
                 val transaction = manager.beginTransaction()
-                transaction.replace(R.id.fragmentView, NumPersonFragment())
+                val frag = NumPersonFragment()
+                val bundle = Bundle()
+                bundle.putInt("numPersone", binding.textNumPersone.text.toString().split(" ")[0].toInt())
+                bundle.putInt("numLettini", binding.textNumLettini.text.toString().split(" ")[0].toInt())
+                frag.arguments = bundle
+                transaction.replace(R.id.fragmentView, frag)
                 transaction.addToBackStack(null)
                 transaction.commit()
 
@@ -81,7 +97,12 @@ class MainPrenotazione : AppCompatActivity() {
             if(manager.backStackEntryCount == 0) {
                 //carico il fragment
                 val transaction = manager.beginTransaction()
-                transaction.replace(R.id.fragmentView, NumPersonFragment())
+                val frag = NumPersonFragment()
+                val bundle = Bundle()
+                bundle.putInt("numPersone", binding.textNumPersone.text.toString().split(" ")[0].toInt())
+                bundle.putInt("numLettini", binding.textNumLettini.text.toString().split(" ")[0].toInt())
+                frag.arguments = bundle
+                transaction.replace(R.id.fragmentView, frag)
                 transaction.addToBackStack(null)
                 transaction.commit()
 
@@ -94,8 +115,6 @@ class MainPrenotazione : AppCompatActivity() {
         }
 
         mBottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-
-            val backgroundParent = binding.parentPrenotazione.solidColor
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
@@ -126,14 +145,6 @@ class MainPrenotazione : AppCompatActivity() {
 
             }
         })
-
-        //setto parte superiore
-        // Formatta la data in "EEE dd MMM" (sab 12 ago)
-        val dateFormat = SimpleDateFormat("EEE dd MMM", Locale.ITALIAN)
-        val formattedDate: String = dateFormat.format(Calendar.getInstance().time)
-        binding.textDate.text = formattedDate
-        binding.textNumPersone.text = resources.getString(R.string.persone_1s, "1")
-        binding.textNumLettini.text = resources.getString(R.string.lettini_1_s, "1")
 
         if(intent.getBooleanExtra("buttonLettino", false)){
             //se non serve nascondo il bottone lettino
@@ -207,8 +218,6 @@ class MainPrenotazione : AppCompatActivity() {
             })
         }
 
-
-
         //prelevo dati per caricare resoconto
         intent.getStringExtra("nome")?.let {
             DBMSboundary().getPrezzoServizio(applicationContext, object : QueryReturnCallback<MyMoney>{
@@ -232,8 +241,6 @@ class MainPrenotazione : AppCompatActivity() {
 
             }, it)
         }
-
-
 
         if(intent.getBooleanExtra("aTesta", false)){
 
@@ -366,83 +373,105 @@ class MainPrenotazione : AppCompatActivity() {
             })
         }
 
-
-
-
         //setto comportamento bottone prenota
         binding.buttonPrenota2.setOnClickListener {
             val (startDate, endDate) = parseDateRange(binding.textDate.text.toString())
             val numPerson = binding.textNumPersone.text.toString().split(" ")[0].toInt()
+            val nomeServizio = intent.getStringExtra("nome")
 
-            if(binding.fragmentContainerResoconto.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).isChecked){
-                //se paga in anticipo allora mostro fragModPagamento
-                val i = Intent(this, MainActivitySchermateVuote::class.java)
-                i.putExtra("layout", R.layout.frag_mod_pagamento)
-                val bundle = Bundle()
+            //controllo che la prenotazione per il giorno specificato non sia stata gia fatta
+           DBMSboundary().checkPrenotazioni(startDate, endDate, nomeServizio, Utente.getInstance().getId(), applicationContext, object : QueryReturnCallback<Boolean>{
+               override fun onReturnValue(response: Boolean, message: String) {
+                   //response indica che la prenotazione gia c'è
+                   if(response){
+                       val string = if(startDate.isEqual(endDate)){
+                           getString(R.string.prenotazione_per_gi_effettuata, startDate)
+                       }else{
+                           getString(R.string.prenotazione_per_gi_effettuata2, startDate, endDate)
+                       }
 
-                val bundleQuery = Bundle()
-                bundleQuery.putString("nomeServizio", intent.getStringExtra("nome"))
-                bundleQuery.putSerializable("startDate", startDate)
-                bundleQuery.putSerializable("endDate", endDate)
-                bundleQuery.putInt("numPerson", numPerson)
+                       Toast.makeText(applicationContext, string, Toast.LENGTH_LONG).show()
 
-                bundle.putBundle("bundleQuery", bundleQuery)
-                bundle.putString("prezzoOriginale", binding.fragmentContainerResoconto.findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
-                bundle.putSerializable("cardview", intent.getSerializableExtra("cardview"))
-                i.putExtra("fragResData", bundle )
-                startActivity(i)
-            }else {
-                //inserisco prenotazione
-                intent.getStringExtra("nome")?.let { it1 ->
-                    DBMSboundary().insertPrenotazione(applicationContext, false, startDate, endDate,
-                        it1, Utente.getInstance().getId(), numPerson)
-                }
+                   }else if(binding.fragmentContainerResoconto.findViewById<CheckBox>(R.id.checkBoxPagaInAnticipo).isChecked){
+                       //se paga in anticipo allora mostro fragModPagamento
+                       val i = Intent(applicationContext, MainActivitySchermateVuote::class.java)
+                       i.putExtra("layout", R.layout.frag_mod_pagamento)
+                       val bundle = Bundle()
 
-                //mostro avvenuta prenotazione
-                val i = Intent(this, MainActivitySchermateVuote::class.java)
-                i.putExtra("layout", R.layout.pagamento_succes)
-                i.putExtra("valueText", "Prenotazione avvenuta con successo!")
-                finish()
-                startActivity(i)
-            }
+                       val bundleQuery = Bundle()
+                       bundleQuery.putString("nomeServizio", intent.getStringExtra("nome"))
+                       bundleQuery.putSerializable("startDate", startDate)
+                       bundleQuery.putSerializable("endDate", endDate)
+                       bundleQuery.putInt("numPerson", numPerson)
 
-            if(LocalDate.now().isBefore(startDate.minusDays(1))) {
+                       bundle.putBundle("bundleQuery", bundleQuery)
+                       bundle.putString("prezzoOriginale", binding.fragmentContainerResoconto.findViewById<TextView>(R.id.textPrezzoOriginale).text.toString().split(" ")[1])
+                       bundle.putSerializable("cardview", intent.getSerializableExtra("cardview"))
+                       i.putExtra("fragResData", bundle )
+                       startActivity(i)
+                   }else {
+                       //inserisco prenotazione
+                       if (nomeServizio != null) {
+                           DBMSboundary().insertPrenotazione(applicationContext, false, startDate, endDate,
+                               nomeServizio, Utente.getInstance().getId(), numPerson)
+                       }else{
+                           Log.i("msg", "errore inserimento prenotazione")
+                       }
 
-                //creo notifica per ricordare la prenotazione un giorno prima
+                       //mostro avvenuta prenotazione
+                       val i = Intent(applicationContext, MainActivitySchermateVuote::class.java)
+                       i.putExtra("layout", R.layout.pagamento_succes)
+                       i.putExtra("valueText", "Prenotazione avvenuta con successo!")
+                       finish()
+                       startActivity(i)
+                   }
 
-                // Creare un ID per il canale di notifica
-                val channelId = "canale_prenotazioni"
+                    //creo notifica per ricordare la prenotazione un giorno prima
+                   if(!response && LocalDate.now().isBefore(startDate.minusDays(1))) {
 
-                // Creare un oggetto NotificationChannel
-                val channel = NotificationChannel(
-                    channelId,
-                    "Ricorda prenotazione",
-                    NotificationManager.IMPORTANCE_DEFAULT
-                )
+                       // Creare un ID per il canale di notifica
+                       val channelId = "canale_prenotazioni"
 
-                // Registrare il canale con il sistema
-                val notificationManager = getSystemService(NotificationManager::class.java)
-                notificationManager.createNotificationChannel(channel)
+                       // Creare un oggetto NotificationChannel
+                       val channel = NotificationChannel(
+                           channelId,
+                           "Ricorda prenotazione",
+                           NotificationManager.IMPORTANCE_DEFAULT
+                       )
 
-                // Creare un oggetto PendingIntent che avvia un broadcast receiver
-                val i = Intent(this, ReminderReceiver::class.java)
-                i.putExtra("title", "Ricorda la tua prenotazione!")
-                i.putExtra("desc", "Hai una prenotazione per le 09:00 di domani")
-                val pendingIntent = PendingIntent.getBroadcast(this, 0, i,
-                    PendingIntent.FLAG_IMMUTABLE)
+                       // Registrare il canale con il sistema
+                       val notificationManager = getSystemService(NotificationManager::class.java)
+                       notificationManager.createNotificationChannel(channel)
 
-                // Creare un oggetto AlarmManager
-                val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
+                       // Creare un oggetto PendingIntent che avvia un broadcast receiver
+                       val i = Intent(applicationContext, ReminderReceiver::class.java)
+                       i.putExtra("title", "Ricorda la tua prenotazione!")
+                       i.putExtra("desc", "Hai una prenotazione per le 09:00 di domani")
+                       val pendingIntent = PendingIntent.getBroadcast(applicationContext, 0, i,
+                           PendingIntent.FLAG_IMMUTABLE)
 
-                val zoneId = ZoneId.systemDefault()
-                val startZonedDateTime = ZonedDateTime.of(startDate.atTime(9, 0), zoneId)
+                       // Creare un oggetto AlarmManager
+                       val alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
 
-                // Calcola la data e l'ora dell'allarme
-                val reminderTime = startZonedDateTime.minus(Duration.ofHours(24))
+                       val zoneId = ZoneId.systemDefault()
+                       val startZonedDateTime = ZonedDateTime.of(startDate.atTime(9, 0), zoneId)
 
-                // Imposta l'allarme
-                alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime.toInstant().toEpochMilli(), pendingIntent)
-            }
+                       // Calcola la data e l'ora dell'allarme
+                       val reminderTime = startZonedDateTime.minus(Duration.ofHours(24))
+
+                       // Imposta l'allarme
+                       alarmManager.set(AlarmManager.RTC_WAKEUP, reminderTime.toInstant().toEpochMilli(), pendingIntent)
+                   }
+               }
+
+               override fun onQueryFailed(fail: String) {
+                   Toast.makeText(applicationContext, fail, Toast.LENGTH_SHORT).show()
+               }
+
+               override fun onQueryError(error: String) {
+                   Toast.makeText(applicationContext, error, Toast.LENGTH_SHORT).show()
+               }
+           })
         }
 
         intent.getStringExtra("nome")?.let {nomeServizio: String ->
@@ -506,7 +535,6 @@ class MainPrenotazione : AppCompatActivity() {
                 }
             }, nomeServizio)
         }
-
     }
 
     fun getBottomSheet(): BottomSheetBehavior<*> {
@@ -546,6 +574,12 @@ class MainPrenotazione : AppCompatActivity() {
         val currentYear = LocalDate.now().year
 
         return LocalDate.of(currentYear, month, dayOfMonth)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        super.onBackPressed()
+        mBottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
 

@@ -169,4 +169,10 @@
     <string name="numero_di_telefono_formato_errato">numero di telefono formato errato</string>
     <string name="inserisci_mail_valida">Inserisci mail valida</string>
     <string name="errore_inserimento_mail">errore inserimento mail</string>
+    <string name="inserire_dati">Inserire dati</string>
+    <string name="credenziali_errate_riprovare">Credenziali errate, riprovare!</string>
+    <string name="inserito_correttamente">Inserito correttamente</string>
+    <string name="errore_inserimento">Errore inserimento</string>
+    <string name="prenotazione_per_gi_effettuata">Prenotazione per %1$s già effettuata, cambiare giorno o servizio</string>
+    <string name="prenotazione_per_gi_effettuata2">Prenotazione per %1$s - %2$s già effettuata, cambiare giorno o servizio</string>
 </resources>
